@@ -36,6 +36,9 @@ class Robot : public MECOtron {
     float T = 0;
     int k = 0;
     bool state = true; 
+
+    bool voltageState = true;
+
 };
 
 #endif // ROBOT_H

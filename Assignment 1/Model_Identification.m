@@ -13,31 +13,122 @@ clear all; close all;
 
 %% data pre-processing
 
-verbose = 1;        % ask for more output
-filename = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment1\filename.csv";
+verbose = 0;        % ask for more output
+location = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\singleStep\";
+length = 80;
+shift = 10;
+Ts = 0.01;
+voltage = 3;
 
-csvfile = filename;
-labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
-labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
-data = dlmread(csvfile, ',', 2, 0); % Data follows the labels
 
-if verbose
-    figure(10)
-    hold on
-    
-    t = data(:,1);
-    
-    for i = 2:(length(data(1,:))-1)
-        plot(data(:,1),data(:,i))
+for i = 1:1
+    for j = 1:5
+        
+        file = append(int2str(i*3),"_",int2str(j),".csv");
+        filename = append(location,file);
+        
+        csvfile = filename;
+        labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
+        labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
+        data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
+        
+        i_start = find(data_temp(:,4)>0,1);
+        data(:,:,((i-1)*5+j)) = data_temp(((i_start-shift):(i_start+length-1-shift)),:);
+        
+        if verbose
+            figure(((i-1)*5+j))
+            hold on
+
+            t = data(:,1,1)/1000;
+
+            for k = 2:(length(data(1,:,((i-1)*5+j)))-1)
+                plot(data(:,1,((i-1)*5+j)),data(:,k,((i-1)*5+j)))
+            end
+            xlabel('t [s]')
+            title('3V step')
+
+            legend(labels(2:end))
+        end
+
     end
-    xlabel('t [s]')
-    
-    legend(labels)
-    
 end
+
+t = Ts*(0:1:(length-1));
+th_mean = mean(data(:,2,:),3);
+v_mean = mean(data(:,3,:),3);
+u_mean = mean(data(:,4,:),3)*voltage;
+
+figure(10)
+hold on
+plot(t,th_mean)
+plot(t,v_mean)
+plot(t,u_mean)
+xlabel('t [s]')
+legend('th','v','u')
+
 
 %% identification of the simple model
 
 
 
 %% identification of the exacter model
+length = 80;
+shift = 10;
+Ts = 0.01;
+voltage = 3;
+
+% -- fft -- 
+th_f = fft(v_mean);
+u_f = fft(u_mean);
+
+fs = 1/Ts;
+f = [0:(length-1)]*(fs/length);
+
+% frf opgesteld in fig3
+figure(20)
+subplot(2,1,1)
+box on
+semilogx(f, 20*log10(abs(th_f./u_f)))
+hold on
+title('magnitude')
+
+subplot(2,1,2)
+box on
+semilogx(f, unwrap(angle(th_f./u_f))*180/pi)
+hold on
+title('phase')
+
+% -- least squ --
+b = v_mean(6:end);
+A = [-v_mean(5:(end-1)) -v_mean(4:(end-2)) -v_mean(3:(end-3)) -v_mean(2:(end-4)) u_mean(5:(end-1)) u_mean(4:(end-2)) u_mean(3:(end-3)) u_mean(2:(end-4)) u_mean(1:(end-5))];
+
+x = A\b;
+
+Num = [0 x(5:end)'];
+Den = [1 x(1:4)' 0];
+
+sys = tf(Num,Den,Ts)
+
+figure(30)
+hold on
+steprp = lsim(sys,u_mean,t);
+plot(t,steprp)
+plot(t,v_mean)
+stairs(t,u_mean)
+xlabel('t [s]')
+
+% vergelijk bode diagrammen
+
+H = squeeze(freqresp(sys,2*pi*f));
+
+figure(20)
+subplot(2,1,1)
+hold on
+box on
+semilogx(f, 20*log10(abs(H)))
+
+subplot(2,1,2)
+hold on
+box on
+semilogx(f, unwrap(angle(H))*180/pi)
+

@@ -63,7 +63,7 @@ hold on
 box on
 plot(t,th_mean)
 plot(t,v_mean)
-plot(t,u_mean)
+stairs(t,u_mean)
 xlabel('t [s]')
 legend('th','v','u')
 title('Measurements')

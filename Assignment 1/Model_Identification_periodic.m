@@ -13,46 +13,49 @@ clear all; close all;
 
 %% data pre-processing
 
-verbose = 0;        % ask for more output
-location = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\singleStep\";
-length = 80;
+verbose = 1;        % ask for more output
+length = 98;
 shift = 10;
 Ts = 0.01;
 voltage = 3;
 
+periods = 5;
+filename = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\3V_2.0.csv";
 
-for i = 1:1
-    for j = 1:5
-        
-        file = append(int2str(i*3),"_",int2str(j),".csv");
-        filename = append(location,file);
-        
-        csvfile = filename;
-        labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
-        labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
-        data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
-        
-        i_start = find(data_temp(:,4)>0,1);
-        data(:,:,((i-1)*5+j)) = data_temp(((i_start-shift):(i_start+length-1-shift)),:);
-        
-        if verbose
-            figure(((i-1)*5+j))
-            hold on
+csvfile = filename;
+labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
+labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
+data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
 
-            t = data(:,1,1)/1000;
+i_start = find(data_temp(:,4)>0,1);
 
-            for k = 2:(length(data(1,:,((i-1)*5+j)))-1)
-                plot(data(:,1,((i-1)*5+j)),data(:,k,((i-1)*5+j)))
-            end
-            xlabel('t [s]')
-            title('3V step')
+for j = 1:periods
 
-            legend(labels(2:end))
+    data(:,:,j) = data_temp(((i_start-shift+(j-1)*length):(i_start-shift+j*length-1)),:);
+    
+    % corrigeer voor dc comp in positie
+    data(:,2,j) = data(:,2,j) - data(1,2,j);
+
+end
+
+if verbose
+     for j = 1:periods   
+        figure(j)
+        hold on
+
+        t = data(:,1,1)/1000;
+
+        for k = 2:13
+            plot(data(:,1,j),data(:,k,j))
         end
+        xlabel('t [s]')
+        title('3V step')
 
+        legend(labels(2:end))
     end
 end
 
+    
 t = Ts*(0:1:(length-1));
 th_mean = mean(data(:,2,:),3);
 v_mean = mean(data(:,3,:),3);
@@ -205,5 +208,3 @@ subplot(2,1,2)
 hold on
 box on
 semilogx(f, unwrap(angle(H2))*180/pi)
-
-

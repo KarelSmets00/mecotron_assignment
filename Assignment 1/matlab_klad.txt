@@ -1,0 +1,98 @@
+%% data pre-processing
+
+verbose = 1;        % ask for more output
+filename_1 = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\3V_2.0.csv";
+filename_2 = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\6V_2.0.csv";
+filename_3 = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\9V_2.0.csv";
+
+% -- file 1: 3V -- 
+
+csvfile = filename_1;
+labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
+labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
+data_1 = dlmread(csvfile, ',', 2, 0); % Data follows the labels
+
+if verbose
+    figure(10)
+    hold on
+    
+    t = data_1(:,1)/1000;
+    
+    for i = 2:(length(data_1(1,:))-1)
+        plot(data_1(:,1),data_1(:,i))
+    end
+    xlabel('t [s]')
+    title('3V step')
+    
+    legend(labels(2:end))
+    
+end
+
+% -- file 1: 6V -- 
+
+csvfile = filename_2;
+labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
+labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
+data_2 = dlmread(csvfile, ',', 2, 0); % Data follows the labels
+
+if verbose
+    figure(20)
+    hold on
+    
+    t = data_2(:,1)/1000;
+    
+    for i = 2:(length(data_2(1,:))-1)
+        plot(data_2(:,1),data_2(:,i))
+    end
+    xlabel('t [s]')
+    title('6V step')
+    
+    legend(labels(2:end))
+    
+end
+
+% -- file 1: 9V -- 
+
+csvfile = filename_3;
+labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
+labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
+data_3 = dlmread(csvfile, ',', 2, 0); % Data follows the labels
+
+if verbose
+    figure(30)
+    hold on
+    
+    t = data_3(:,1)/1000;
+    
+    for i = 2:(length(data_3(1,:))-1)
+        plot(data_3(:,1),data_3(:,i))
+    end
+    xlabel('t [s]')
+    title('9V step')
+    
+    legend(labels(2:end))
+    
+end
+
+vState_1 = data_1(:, 4);
+vState_2 = data_2(:, 4);
+vState_3 = data_3(:, 4);
+
+theta_1 = data_1(:,2);
+theta_2 = data_2(:,2);
+theta_3 = data_3(:,2);
+
+i_start = find(vState_1>0,1);
+length = 50;
+theta_1 = theta_1((i_start):end);
+
+i_start = find(vState_2>0,1);
+theta_2 = theta_2((i_start):end);
+
+i_start = find(vState_3>0,1);
+theta_3 = theta_3((i_start):end);
+
+theta_1_avg
+for i=0:4
+   theta_1_avg = theta_1(i*length:(i+1)*lenght)
+end

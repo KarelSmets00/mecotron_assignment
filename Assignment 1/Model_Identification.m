@@ -14,7 +14,8 @@ clear all; close all;
 %% data pre-processing
 
 verbose = 0;        % ask for more output
-location = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\singleStep\";
+%location = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\singleStep\";
+location = "C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\Measured Data\StepInput\singleStep\"
 length = 80;
 shift = 10;
 Ts = 0.01;
@@ -207,3 +208,4 @@ box on
 semilogx(f, unwrap(angle(H2))*180/pi)
 
 
+d

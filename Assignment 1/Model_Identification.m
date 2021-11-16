@@ -204,6 +204,43 @@ xlabel('t [s]')
 legend('error 2nd order', 'error 5th order')
 title('error of model vs measurements')
 
+
+%% Identification using limitation on poles
+% ------------------------------------------------------------------------
+% introduce pole limitation based on cancellations made between ZOH and
+% transformed terms of continuous system
+% H(z) = O(z)/O(z^3) met cte term in noemer = 0
+% ------------------------------------------------------------------------
+
+b = v_mean(4: end);
+A = [-v_mean(3:(end-1)) -v_mean(2:(end-2)) u_mean(3:(end-1)) u_mean(2:(end-2)) u_mean(1:(end-3))];
+
+x = A\b;
+
+Num_32z = [0 x(3:end)'];
+Den_32z = [1 x(1:2)' 0];
+
+sys_32z = tf(Num_32z, Den_32z, Ts)
+
+figure(80)
+hold on
+box on
+steprp_32z = lsim(sys_32z,u_mean,t);
+plot(t,steprp_5)
+plot(t,steprp_32z)
+plot(t,v_mean)
+stairs(t,u_mean)
+xlabel('t [s]')
+legend('sim 5th order','sim 3th order (2 zero)','measurement','input')
+title('Speed Step Response')
+
+% vergelijk responsen
+error_32z = v_mean - steprp_32z;
+
+figure(90)
+bode(sys_32z)
+
 %% Identification of realistic model with filtered Data
 Model_Identification_filter
+
 

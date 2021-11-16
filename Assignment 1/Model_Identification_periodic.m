@@ -9,18 +9,18 @@
 % Smets Karel
 % -------------------------------------------------------------------------
 
-clear all; close all;
 
 %% data pre-processing
 
 verbose = 1;        % ask for more output
-length = 98;
+len = 98;
 shift = 10;
 Ts = 0.01;
 voltage = 3;
 
 periods = 5;
-filename = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\3V_2.0.csv";
+%filename = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\3V_2.0.csv";
+location = "C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\Measured Data\StepInput\singleStep\"
 
 csvfile = filename;
 labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
@@ -31,9 +31,9 @@ i_start = find(data_temp(:,4)>0,1);
 
 for j = 1:periods
 
-    data(:,:,j) = data_temp(((i_start-shift+(j-1)*length):(i_start-shift+j*length-1)),:);
+    data(:,:,j) = data_temp(((i_start-shift+(j-1)*len):(i_start-shift+j*len-1)),:);
     
-    % corrigeer voor dc comp in positie
+    % corrigeer voor 'dc component' in positie
     data(:,2,j) = data(:,2,j) - data(1,2,j);
 
 end
@@ -56,7 +56,7 @@ if verbose
 end
 
     
-t = Ts*(0:1:(length-1));
+t = Ts*(0:1:(len-1));
 th_mean = mean(data(:,2,:),3);
 v_mean = mean(data(:,3,:),3);
 u_mean = mean(data(:,4,:),3)*voltage;
@@ -86,7 +86,7 @@ v_f = fft(v_mean);
 u_f = fft(u_mean);
 
 fs = 1/Ts;
-f = [0:(length-1)]*(fs/length);
+f = [0:(len-1)]*(fs/len);
 
 % frf opgesteld in fig3
 figure(20)
@@ -152,7 +152,7 @@ th_f = fft(th_mean);
 u_f = fft(u_mean);
 
 fs = 1/Ts;
-f = [0:(length-1)]*(fs/length);
+f = [0:(len-1)]*(fs/len);
 
 % frf opgesteld in fig3
 figure(40)

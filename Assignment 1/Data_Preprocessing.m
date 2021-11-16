@@ -2,8 +2,8 @@
 
 clear all; close all;
 verbose = 1;        % ask for more output
-%location = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\singleStep\";
-location = "C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\Measured Data\StepInput\singleStep\";
+location = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\singleStep\";
+%location = "C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\Measured Data\StepInput\singleStep\";
 len = 80;
 shift = 10;
 Ts = 0.01;

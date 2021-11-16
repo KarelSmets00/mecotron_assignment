@@ -76,6 +76,7 @@ hold on; box on;
 plot(t, error_2)
 plot(t, error_5)
 plot(t, error_5_f)
+plot(t, error_32z)
 xlabel('t [s]')
-legend('error 2nd order', 'error 5th order', 'error 5th order filter')
+legend('error 2nd order', 'error 5th order', 'error 5th order filter','error 3th order (2 zero)')
 title('error of model vs measurements')

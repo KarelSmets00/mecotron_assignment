@@ -1,13 +1,12 @@
-%% Data pre-processing (without cart, no 'load')
+%% Data pre-processing (with cart)
 
-clear all; close all;
-verbose = 1;        % ask for more output
-location = ".\Measured Data\StepInput\singleStep\";
+verbose = 1; 
+
+location = ".\Measured Data\StepInput\singleStepCart\";
 len = 80;
 shift = 10;
 Ts = 0.01;
 voltageInterval = 3;
-voltage = 6
 
 for i = 1:3
     for j = 1:5
@@ -21,20 +20,20 @@ for i = 1:3
         data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
         
         i_start = find(data_temp(:,4)>0,1);
-        data(:,:,((i-1)*5+j)) = data_temp(((i_start-shift):(i_start+len-1-shift)),:);
+        dataCart(:,:,((i-1)*5+j)) = data_temp(((i_start-shift):(i_start+len-1-shift)),:);
         
     end
 end
 
 if verbose
 
-    t = data(:,1,1)/1000;
-    figure (1)
+    t = dataCart(:,1,1)/1000;
+    figure (2)
     hold on
 
     for i=1:15   
     %plot(t, data(:,2,((i-1)*5+j)))
-    plot(t, data(:,3,i));
+    plot(t, dataCart(:,3,i));
     xlabel('t [s]')
     title('3V step')
     end
@@ -46,24 +45,22 @@ end
 %Model_Identification zodat daar ook alles klopt
 
 t = Ts*(0:1:(len-1));
-th_mean = mean(data(:,2,(1:5)),3);
-v_mean = mean(data(:,3,(1:5)),3);
-u_mean = mean(data(:,4,(1:5)),3)*voltageInterval;
 
-figure(10)
+th_mean_ = [mean(dataCart(:,2,(1:5)),3), mean(dataCart(:,2,(6:10)),3), ...
+            mean(dataCart(:,2,(11:15)),3)];
+v_mean_ = [mean(dataCart(:,3,(1:5)),3), mean(dataCart(:,3,(6:10)),3), ...
+            mean(dataCart(:,3,(11:15)),3)];
+u_mean_ = [mean(dataCart(:,4,(1:5)),3)*3, mean(dataCart(:,4,(6:10)),3)*6, ...
+            mean(dataCart(:,4,(11:15)),3)*9];
+
+
+
+figure(11)
 hold on
 box on
-plot(t,th_mean)
-plot(t,v_mean)
-stairs(t,u_mean)
+plot(t,th_mean_)
+plot(t,v_mean_)
+stairs(t,u_mean_)
 xlabel('t [s]')
-legend('th','v','u')
+legend('th Cart','vCart','uCart')
 title('Measurements')
-
-
-
-
-
-
-
-

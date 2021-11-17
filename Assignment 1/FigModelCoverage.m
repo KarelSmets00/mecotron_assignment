@@ -5,28 +5,28 @@ model = sys_32z;
 figure
 subplot(3,1,1);
 hold on; grid on;
-resp = lsim(model, u_meanBackup(:,1), t);
-error_3V_abs = resp - v_meanBackup(:,1);
-error_3V_rel = error_3V_abs./v_meanBackup(:,1);
+resp = lsim(model, u_mean_(:,1), t);
+error_3V_abs = resp - v_mean_(:,1);
+error_3V_rel = error_3V_abs./v_mean_(:,1);
 plot(t, resp);
-plot(t,v_meanBackup(:,1));
+plot(t,v_mean_(:,1));
 
 
 subplot(3,1,2);
 hold on; grid on; 
-resp = lsim(model, u_meanBackup(:,2), t);
-error_6V_abs = resp - v_meanBackup(:,2);
-error_6V_rel = error_6V_abs./v_meanBackup(:,2);
+resp = lsim(model, u_mean_(:,2), t);
+error_6V_abs = resp - v_mean_(:,2);
+error_6V_rel = error_6V_abs./v_mean_(:,2);
 plot(t, resp);
-plot(t,v_meanBackup(:,2));
+plot(t,v_mean_(:,2));
 
 subplot(3,1,3);
 hold on; grid on  
-resp = lsim(model, u_meanBackup(:,3), t);
-error_9V_abs = resp - v_meanBackup(:,3)
-error_9V_rel = error_9V_abs./v_meanBackup(:,3);
+resp = lsim(model, u_mean_(:,3), t);
+error_9V_abs = resp - v_mean_(:,3);
+error_9V_rel = error_9V_abs./v_mean_(:,3);
 plot(t, resp);
-plot(t,v_meanBackup(:,3));
+plot(t,v_mean_(:,3));
 
 figure
 subplot(3,2,1)

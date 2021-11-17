@@ -10,12 +10,12 @@
 % -------------------------------------------------------------------------
 
 %% data pre-processing
-Data_Preprocessing
+Data_Preprocessing_Cart
 
 VoltageUsed = 2;
-v_mean = v_mean(:, VoltageUsed);
-th_mean = th_mean(:, VoltageUsed);
-u_mean = u_mean(:, VoltageUsed);
+v_mean = v_mean_(:, VoltageUsed);
+th_mean = th_mean_(:, VoltageUsed);
+u_mean = u_mean_(:, VoltageUsed);
 
 %% fft of measured data
 

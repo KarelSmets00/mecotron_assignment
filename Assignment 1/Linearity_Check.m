@@ -3,8 +3,7 @@
 close all;
 
 verbose = 1;        % ask for more output
-location = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\singleStep\";
-%location = "C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\Measured Data\StepInput\singleStep\";
+location = ".\Measured Data\StepInput\singleStep\";
 len = 80;
 shift = 10;
 Ts = 0.01;
@@ -42,10 +41,6 @@ if verbose
 
 end
 
-%onderstaande berekeningen gelden voor de 3V input!! Dit aanpassen als we de
-%inputspanning gewijzigd wordt, plus aanpassingen maken aan
-%Model_Identification zodat daar ook alles klopt
-
 t = Ts*(0:1:(len-1));
 th_mean = [mean(data(:,2,(1:5)),3), mean(data(:,2,(6:10)),3), mean(data(:,2,(10:15)),3)];
 v_mean = [mean(data(:,3,(1:5)),3), mean(data(:,3,(6:10)),3), mean(data(:,3,(10:15)),3)];
@@ -64,22 +59,27 @@ title('Measurements')
 
 %% lineariteit check
 
-model = sys_32z;
-
-resp_3 = lsim(model,u_mean(:,1),t);
-resp_6 = lsim(model,u_mean(:,2),t);
-resp_9 = lsim(model,u_mean(:,3),t);
-
 % som van 3 en 6 moet overeen komen met 9
 
-resp_sup = resp_3 + resp_6;
+resp_sup_9 = v_mean(:,2) + v_mean(:,1);
+resp_sup_3 = v_mean(:,2) - v_mean(:,1);
 
 figure(310)
 subplot(2,1,1)
 hold on
-plot(t,resp_sup')
-plot(t,v_mean(:,3))
-legend('lsim', 'meas')
+plot(t,resp_sup_3)
+plot(t,v_mean(:,1))
+legend('meas 6v - meas 3v', 'meas 3v','Location','southeast')
 
 subplot(2,1,2)
-plot(t,(resp_sup'-v_mean(:,3)'))
+plot(t,(resp_sup_3-v_mean(:,1)))
+
+figure(320)
+subplot(2,1,1)
+hold on
+plot(t,resp_sup_9)
+plot(t,v_mean(:,3))
+legend('meas 6v + meas 3v', 'meas 9v','Location','southeast')
+
+subplot(2,1,2)
+plot(t,(resp_sup_9-v_mean(:,3)))

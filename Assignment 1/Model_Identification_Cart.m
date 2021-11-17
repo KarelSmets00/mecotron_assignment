@@ -12,7 +12,7 @@
 %% data pre-processing
 Data_Preprocessing
 
-VoltageUsed = 1;
+VoltageUsed = 2;
 v_mean = v_mean(:, VoltageUsed);
 th_mean = th_mean(:, VoltageUsed);
 u_mean = u_mean(:, VoltageUsed);

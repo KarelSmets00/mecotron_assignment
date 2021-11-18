@@ -13,9 +13,13 @@
 Data_Preprocessing_Cart
 
 VoltageUsed = 2;
-v_mean = v_mean_(:, VoltageUsed);
 th_mean = th_mean_(:, VoltageUsed);
 u_mean = u_mean_(:, VoltageUsed);
+
+%in case you use measurements of one voltage (toggle one on or off)
+    v_mean = v_mean_(:, VoltageUsed);
+%in case you use the mean of the measurements
+    %v_mean = mean(v_mean_,2);
 
 %% fft of measured data
 

@@ -9,7 +9,7 @@ Ts = 0.01;
 voltageInterval = 3;
 voltage = 6
 
-for i = 1:3
+for i = 1:4
     for j = 1:5
         
         file = append(int2str(i*voltageInterval),"_",int2str(j),".csv");

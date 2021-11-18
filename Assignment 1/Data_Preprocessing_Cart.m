@@ -1,4 +1,5 @@
 %% Data pre-processing (with cart)
+clear all; close all;
 
 verbose = 1; 
 
@@ -8,7 +9,7 @@ shift = 10;
 Ts = 0.01;
 voltageInterval = 3;
 
-for i = 1:3
+for i = 1:4
     for j = 1:5
         
         file = append(int2str(i*voltageInterval),"_",int2str(j),".csv");
@@ -31,7 +32,7 @@ if verbose
     figure (2)
     hold on
 
-    for i=1:15   
+    for i=1:20  
     %plot(t, data(:,2,((i-1)*5+j)))
     plot(t, dataCart(:,3,i));
     xlabel('t [s]')
@@ -47,11 +48,11 @@ end
 t = Ts*(0:1:(len-1));
 
 th_mean_ = [mean(dataCart(:,2,(1:5)),3), mean(dataCart(:,2,(6:10)),3), ...
-            mean(dataCart(:,2,(11:15)),3)];
+            mean(dataCart(:,2,(11:15)),3), mean(dataCart(:,2,(16:20)),3)];
 v_mean_ = [mean(dataCart(:,3,(1:5)),3), mean(dataCart(:,3,(6:10)),3), ...
-            mean(dataCart(:,3,(11:15)),3)];
+            mean(dataCart(:,3,(11:15)),3), mean(dataCart(:,3,(16:20)),3)];
 u_mean_ = [mean(dataCart(:,4,(1:5)),3)*3, mean(dataCart(:,4,(6:10)),3)*6, ...
-            mean(dataCart(:,4,(11:15)),3)*9];
+            mean(dataCart(:,4,(11:15)),3)*9, mean(dataCart(:,4,(16:20)),3)*12];
 
 
 

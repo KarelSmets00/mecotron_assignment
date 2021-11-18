@@ -2,6 +2,8 @@
 
 clear all; close all;
 
+motor = 'B'             % choose wich motor to analyse
+
 Data_Preprocessing_Cart;
 
 figure(10)
@@ -42,18 +44,33 @@ legend('meas 6v + meas 3v', 'meas 9v','Location','southeast')
 subplot(2,1,2)
 plot(t,(resp_sup_9-v_mean_(:,3)))
 
+% som van 4 keer 3V of 2 keer 6V moet overeen komen met 12V
+figure(330)
+subplot(2,1,1)
+hold on
+plot(t,4*v_mean_(:,1))
+plot(t, 2*v_mean_(:,2))
+plot(t,v_mean_(:,4))
+legend('4x meas 3v', '2x meas 6v', 'meas 12v','Location','southeast')
+
+subplot(2,1,2)
+hold on
+plot(t,(4*v_mean_(:,1)-v_mean_(:,4)))
+plot(t,(2*v_mean_(:,2)-v_mean_(:,4)))
+legend('error 4x 3V', 'error 2x 6V')
+
 %% linearity check calculating the gradients
 
 for i = 1:3
     grad(:,i) = v_mean_(:,i+1)-v_mean_(:,i);
 end
 
-figure(330)
+figure(340)
 hold on 
 surf([1 2 3]',t, grad)
 title('gradients')
 
-figure(340)
+figure(350)
 hold on 
 surf([3, 6, 9, 12]', t, v_mean_)
 title('surface of responses')

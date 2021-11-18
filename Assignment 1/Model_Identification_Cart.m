@@ -10,6 +10,10 @@
 % -------------------------------------------------------------------------
 
 %% data pre-processing
+clear all; close all;
+
+motor = 'A';            % choose wich motor to analyse
+
 Data_Preprocessing_Cart
 
 VoltageUsed = 2;

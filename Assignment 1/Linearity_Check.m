@@ -2,47 +2,9 @@
 
 clear all; close all;
 
+
 Data_Preprocessing;
-% verbose = 1;        % ask for more output
-% location = ".\Measured Data\StepInput\singleStep\";
-% len = 80;
-% shift = 10;
-% Ts = 0.01;
-% voltage = 3;
-% 
-% for i = 1:3
-%     for j = 1:5
-%         
-%         file = append(int2str(i*voltage),"_",int2str(j),".csv");
-%         filename = append(location,file);
-%         
-%         csvfile = filename;
-%         labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
-%         labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
-%         data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
-%         
-%         i_start = find(data_temp(:,4)>0,1);
-%         data(:,:,((i-1)*5+j)) = data_temp(((i_start-shift):(i_start+len-1-shift)),:);
-%         
-%     end
-% end
-% 
-% if verbose
-% 
-%     t = data(:,1,1)/1000;
-%     figure (1)
-%     hold on
-% 
-%     for i=1:15   
-%     %plot(t, data(:,2,((i-1)*5+j)))
-%     plot(t, data(:,3,i));
-%     xlabel('t [s]')
-%     title('3V step')
-%     end
-% 
-% end
-% 
-% t = Ts*(0:1:(len-1));
+
 th_mean = [mean(data(:,2,(1:5)),3), mean(data(:,2,(6:10)),3), mean(data(:,2,(10:15)),3), mean(data(:,2,(16:20)),3) ];
 v_mean = [mean(data(:,3,(1:5)),3), mean(data(:,3,(6:10)),3), mean(data(:,3,(10:15)),3), mean(data(:,3,(16:20)),3)];
 u_mean = [mean(data(:,4,(1:5)),3)*3, mean(data(:,4,(6:10)),3)*6, mean(data(:,4,(10:15)),3)*9, mean(data(:,4,(16:20)),3)*12];
@@ -85,18 +47,33 @@ legend('meas 6v + meas 3v', 'meas 9v','Location','southeast')
 subplot(2,1,2)
 plot(t,(resp_sup_9-v_mean(:,3)))
 
+% som van 4 keer 3V of 2 keer 6V moet overeen komen met 12V
+figure(330)
+subplot(2,1,1)
+hold on
+plot(t,4*v_mean(:,1))
+plot(t, 2*v_mean(:,2))
+plot(t,v_mean(:,4))
+legend('4x meas 3v', '2x meas 6v', 'meas 12v','Location','southeast')
+
+subplot(2,1,2)
+hold on
+plot(t,(4*v_mean(:,1)-v_mean(:,4)))
+plot(t,(2*v_mean(:,2)-v_mean(:,4)))
+legend('error 4x 3V', 'error 2x 6V')
+
 %% linearity check calculating the gradients
 
 for i = 1:3
     grad(:,i) = v_mean(:,i+1)-v_mean(:,i);
 end
 
-figure(330)
+figure(340)
 hold on 
 surf([1 2 3]',t, grad)
 title('gradients')
 
-figure(340)
+figure(350)
 hold on 
 surf([3, 6, 9, 12]', t, v_mean)
 title('surface of responses')

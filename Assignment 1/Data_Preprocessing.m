@@ -1,6 +1,5 @@
 %% Data pre-processing (without cart, no 'load')
 
-clear all; close all;
 verbose = 1;        % ask for more output
 location = ".\Measured Data\StepInput\singleStep\";
 len = 80;

@@ -10,6 +10,8 @@
 % -------------------------------------------------------------------------
 
 %% data pre-processing
+
+clear all; close all;
 Data_Preprocessing
 
 %% fft of measured data

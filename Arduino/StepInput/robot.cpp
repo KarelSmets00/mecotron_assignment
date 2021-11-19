@@ -40,11 +40,11 @@ void Robot::control() {
     if (k==0){
       if (state){
         setVoltageMotorA(voltageA);
-        //setVoltageMotorB(voltageA);
+        setVoltageMotorB(voltageA);
       }
       else{
         setVoltageMotorA(0.0);
-        //setVoltageMotorB(0.0);
+        setVoltageMotorB(0.0);
       }
     }
     k=k+1;
@@ -63,10 +63,15 @@ void Robot::control() {
   
   float ra = getPositionMotorA(); // get the position of motor A [rad]
   float va = getSpeedMotorA();    // Get the wheel speed of motor A [rad/s]
+
+  float rb = getPositionMotorB();
+  float vb = getSpeedMotorB();
   
-  writeValue(0, ra);       // Send the value of variable k to QRoboticsCenter's channel 0
+  writeValue(0,ra);       // Send the value of variable k to QRoboticsCenter's channel 0
   writeValue(1,va);
-  writeValue(2, voltageState);
+  writeValue(2,voltageState);
+  writeValue(3,rb);
+  writeValue(4,vb);
 }
 
 bool Robot::controlEnabled() {

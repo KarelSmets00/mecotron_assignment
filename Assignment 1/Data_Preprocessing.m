@@ -1,6 +1,5 @@
 %% Data pre-processing (without cart, no 'load')
 
-clear all; close all;
 verbose = 1;        % ask for more output
 location = ".\Measured Data\StepInput\singleStep\";
 len = 80;
@@ -9,7 +8,7 @@ Ts = 0.01;
 voltageInterval = 3;
 voltage = 6
 
-for i = 1:3
+for i = 1:4
     for j = 1:5
         
         file = append(int2str(i*voltageInterval),"_",int2str(j),".csv");

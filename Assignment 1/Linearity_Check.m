@@ -59,27 +59,37 @@ title('Measurements')
 
 %% lineariteit check
 
-% som van 3 en 6 moet overeen komen met 9
-
 resp_sup_9 = v_mean(:,2) + v_mean(:,1);
 resp_sup_3 = v_mean(:,2) - v_mean(:,1);
 
 figure(310)
 subplot(2,1,1)
 hold on
+box on
 plot(t,resp_sup_3)
 plot(t,v_mean(:,1))
+xlabel('time t [s]')
+ylabel('angular speed \omega [rad/s]')
 legend('meas 6v - meas 3v', 'meas 3v','Location','southeast')
 
 subplot(2,1,2)
+box on
 plot(t,(resp_sup_3-v_mean(:,1)))
+xlabel('time t [s]')
+ylabel('abs error [rad/s]')
 
 figure(320)
 subplot(2,1,1)
 hold on
+box on
 plot(t,resp_sup_9)
 plot(t,v_mean(:,3))
+xlabel('time t [s]')
+ylabel('angular speed \omega [rad/s]')
 legend('meas 6v + meas 3v', 'meas 9v','Location','southeast')
 
 subplot(2,1,2)
+box on
 plot(t,(resp_sup_9-v_mean(:,3)))
+xlabel('time t [s]')
+ylabel('abs error [rad/s]')

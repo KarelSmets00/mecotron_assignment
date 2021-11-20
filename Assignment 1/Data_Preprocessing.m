@@ -1,4 +1,4 @@
-function [data,t,u_mean_,th_mean_,v_mean_] = Data_Preprocessing(folder, motor)
+function [data,t,u_mean_,th_mean_,v_mean_,Ts,len] = Data_Preprocessing(folder, motor)
 % -- Data pre-processing --
 
 verbose = 1; 

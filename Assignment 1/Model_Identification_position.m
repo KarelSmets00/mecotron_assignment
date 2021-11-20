@@ -5,7 +5,7 @@ clear all; close all;
 motor = 'A';            % choose wich motor to analyse
 folder = "singleStep";  % folder in wich unloaded motor experiments are stored
 
-[data,t,u_mean_,th_mean_,v_mean_] = Data_Preprocessing(folder,motor);
+[data,t,u_mean_,th_mean_,v_mean_,Ts,len] = Data_Preprocessing(folder,motor);
 
 VoltageUsed = 2;
 th_mean = th_mean_(:, VoltageUsed);

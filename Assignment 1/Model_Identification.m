@@ -15,10 +15,10 @@
 
 clear all; close all;
 
-motor = 'A';            % choose wich motor to analyse
+motor = 'B';            % choose wich motor to analyse
 folder = "singleStep";  % folder in wich unloaded motor experiments are stored
 
-[data,t,u_mean_,th_mean_,v_mean_] = Data_Preprocessing(folder,motor);
+[data,t,u_mean_,th_mean_,v_mean_,Ts,len] = Data_Preprocessing(folder,motor);
 
 VoltageUsed = 2;
 th_mean = th_mean_(:, VoltageUsed);
@@ -196,9 +196,15 @@ Model_Identification_filter
 
 %% store results
 
-model = sys_32z;
-fileName = "sys_32z_cart";
-modelName = "sys_32z_" + motor;
+fileName = "sys_32z_motor";
 
-save(fileName,'-struct',modelName,model)
+switch motor
+    case 'A'
+        model_A = sys_32z;
+        save(fileName,'model_A','-append')
+    case 'B'
+        model_B = sys_32z;
+        save(fileName,'model_B','-append')
+end
+
 

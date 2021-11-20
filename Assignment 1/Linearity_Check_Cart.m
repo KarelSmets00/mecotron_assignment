@@ -2,19 +2,11 @@
 
 clear all; close all;
 
-motor = 'B'             % choose wich motor to analyse
+motor = 'B';                % choose wich motor to analyse
+folder = "singleStepCart";  % folder in wich loaded motor experiments are stored
 
-Data_Preprocessing_Cart;
+[data,t,u_mean_,th_mean_,v_mean_] = Data_Preprocessing(folder,motor);
 
-figure(10)
-hold on
-box on
-plot(t,th_mean_)
-plot(t,v_mean_)
-stairs(t,u_mean_)
-xlabel('t [s]')
-legend('th','v','u')
-title('Measurements')
 
 
 %% lineariteit check

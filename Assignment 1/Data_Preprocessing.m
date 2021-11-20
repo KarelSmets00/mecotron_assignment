@@ -1,12 +1,13 @@
-%% Data pre-processing (without cart, no 'load')
+function [data,t,u_mean_,th_mean_,v_mean_] = Data_Preprocessing(folder, motor)
+% -- Data pre-processing --
 
-verbose = 1;        % ask for more output
-location = ".\Measured Data\StepInput\singleStep\";
+verbose = 1; 
+
+location = ".\Measured Data\StepInput\" + folder + "\";
 len = 80;
 shift = 10;
 Ts = 0.01;
 voltageInterval = 3;
-voltage = 6
 
 for i = 1:4
     for j = 1:5
@@ -28,41 +29,47 @@ end
 if verbose
 
     t = data(:,1,1)/1000;
-    figure (1)
+    figure (2)
     hold on
 
-    for i=1:15   
-    %plot(t, data(:,2,((i-1)*5+j)))
+    for i=1:20  
     plot(t, data(:,3,i));
     xlabel('t [s]')
-    title('3V step')
+    title('step responses')
     end
 
 end
 
-%onderstaande berekeningen gelden voor de 3V input!! Dit aanpassen als we de
-%inputspanning gewijzigd wordt, plus aanpassingen maken aan
-%Model_Identification zodat daar ook alles klopt
 
 t = Ts*(0:1:(len-1));
-th_mean = mean(data(:,2,(1:5)),3);
-v_mean = mean(data(:,3,(1:5)),3);
-u_mean = mean(data(:,4,(1:5)),3)*voltageInterval;
 
-figure(10)
+switch motor
+    case 'A'
+        th_mean_ = [mean(data(:,2,(1:5)),3), mean(data(:,2,(6:10)),3), ...
+                    mean(data(:,2,(11:15)),3), mean(data(:,2,(16:20)),3)];
+        v_mean_ = [mean(data(:,3,(1:5)),3), mean(data(:,3,(6:10)),3), ...
+                    mean(data(:,3,(11:15)),3), mean(data(:,3,(16:20)),3)];
+        u_mean_ = [mean(data(:,4,(1:5)),3)*3, mean(data(:,4,(6:10)),3)*6, ...
+                    mean(data(:,4,(11:15)),3)*9, mean(data(:,4,(16:20)),3)*12];
+    case 'B'
+        th_mean_ = [mean(data(:,5,(1:5)),3), mean(data(:,5,(6:10)),3), ...
+                    mean(data(:,5,(11:15)),3), mean(data(:,5,(16:20)),3)];
+        v_mean_ = [mean(data(:,6,(1:5)),3), mean(data(:,6,(6:10)),3), ...
+                    mean(data(:,6,(11:15)),3), mean(data(:,6,(16:20)),3)];
+        u_mean_ = [mean(data(:,4,(1:5)),3)*3, mean(data(:,4,(6:10)),3)*6, ...
+                    mean(data(:,4,(11:15)),3)*9, mean(data(:,4,(16:20)),3)*12];
+end
+    
+
+
+figure(11)
 hold on
 box on
-plot(t,th_mean)
-plot(t,v_mean)
-stairs(t,u_mean)
+plot(t,th_mean_)
+plot(t,v_mean_)
+stairs(t,u_mean_)
 xlabel('t [s]')
-legend('th','v','u')
+legend('th Cart','vCart','uCart')
 title('Measurements')
 
-
-
-
-
-
-
-
+end

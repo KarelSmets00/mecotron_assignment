@@ -62,13 +62,6 @@ title('Speed Step Response')
 % -------------------------------------------------------------------------
 % ---- model for position output ----
 
-% -- fft -- 
-th_f = fft(th_mean);
-u_f = fft(u_mean);
-
-fs = 1/Ts;
-f = [0:(len-1)]*(fs/len);
-
 % -- least squ --
 b = th_mean(7:end);
 A = [-th_mean(6:(end-1)) -th_mean(5:(end-2)) -th_mean(4:(end-3)) -th_mean(3:(end-4)) -th_mean(2:(end-5)) u_mean(6:(end-1)) u_mean(5:(end-2)) u_mean(4:(end-3)) u_mean(3:(end-4)) u_mean(2:(end-5)) u_mean(1:(end-6))];
@@ -90,21 +83,6 @@ stairs(t,u_mean)
 xlabel('t [s]')
 legend('simulation','measurement','input')
 title('Position Step Response')
-
-% vergelijk bode diagrammen
-
-H5 = squeeze(freqresp(sys_5,2*pi*f));
-
-figure(20)
-subplot(2,1,1)
-hold on
-box on
-semilogx(f, 20*log10(abs(H5)))
-
-subplot(2,1,2)
-hold on
-box on
-semilogx(f, unwrap(angle(H5))*180/pi)
 
 
 %% identification of the simple model

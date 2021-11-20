@@ -35,31 +35,6 @@ u_mean = u_mean_(:, VoltageUsed);
 % -------------------------------------------------------------------------
 % ---- model for speed output ---- 
 
-% -- fft -- 
-v_f = fft(v_mean);
-u_f = fft(u_mean);
-
-fs = 1/Ts;
-f = [0:(len-1)]*(fs/len);
-
-% frf opgesteld in fig3
-figure(20)
-subplot(2,1,1)
-semilogx(f, 20*log10(abs(v_f./u_f)))
-hold on
-box on
-ylabel('mag. [dB]')
-xlabel('\omega [rad/s]')
-title('magnitude')
-
-subplot(2,1,2)
-semilogx(f, unwrap(angle(v_f./u_f))*180/pi)
-hold on
-box on
-ylabel('ang. [°]')
-xlabel('\omega [rad/s]')
-title('phase')
-
 
 %% identification of the more realistic model
 
@@ -87,20 +62,6 @@ xlabel('t [s]')
 legend('simulation','measurement','input')
 title('Speed Step Response')
 
-% vergelijk bode diagrammen
-
-H5 = squeeze(freqresp(sys_5,2*pi*f));
-
-figure(20)
-subplot(2,1,1)
-hold on
-box on
-semilogx(f, 20*log10(abs(H5)))
-
-subplot(2,1,2)
-hold on
-box on
-semilogx(f, unwrap(angle(H5))*180/pi)
 
 %% identification of the simple model
 
@@ -128,20 +89,6 @@ stairs(t,u_mean)
 xlabel('t [s]')
 legend('sim 5th order','sim 2nd order','measurement','input')
 title('Speed Step Response')
-
-% vergelijk bode diagrammen
-H2 = squeeze(freqresp(sys_2,2*pi*f));
-
-figure(20)
-subplot(2,1,1)
-hold on
-box on
-semilogx(f, 20*log10(abs(H2)))
-
-subplot(2,1,2)
-hold on
-box on
-semilogx(f, unwrap(angle(H2))*180/pi)
 
 % vergelijk error
 error_2 = v_mean-steprp_2;

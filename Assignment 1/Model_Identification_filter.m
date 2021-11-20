@@ -4,6 +4,11 @@
 % ---- model for speed output ---- 
 
 % -- fft -- 
+v_f = fft(v_mean);
+u_f = fft(u_mean);
+
+fs = 1/Ts;
+f = [0:(len-1)]*(fs/len);
 % frf opgesteld in fig3
 figure(100)
 subplot(2,1,1)

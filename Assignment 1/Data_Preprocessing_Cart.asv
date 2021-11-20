@@ -6,8 +6,7 @@ switch window
     case 'RampUp'
         len = 80;
     case 'RampDown'
-        len = 250;
-end
+        
 
 location = ".\Measured Data\StepInput\singleStepCart\";
 shift = 10;

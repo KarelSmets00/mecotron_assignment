@@ -64,10 +64,12 @@ void Robot::control() {
   float ra = getPositionMotorA(); // get the position of motor A [rad]
   float va = getSpeedMotorA();    // Get the wheel speed of motor A [rad/s]
   float ia = getCurrentMotorA();
-
+  float volta = getVoltageMotorA();
+  
   float rb = getPositionMotorB();
   float vb = getSpeedMotorB();
   float ib = getCurrentMotorB();
+  float voltb = getVoltageMotorB();
   
   writeValue(0,ra);       // Send the value of variable k to QRoboticsCenter's channel 0
   writeValue(1,va);
@@ -76,6 +78,8 @@ void Robot::control() {
   writeValue(4,vb);
   writeValue(5,ia);
   writeValue(6,ib);
+  writeValue(7,volta);
+  writeValue(8,voltb);
 }
 
 bool Robot::controlEnabled() {

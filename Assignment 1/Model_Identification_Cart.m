@@ -13,6 +13,7 @@
 clear all; close all;
 
 motor = 'A';            % choose wich motor to analyse
+window = 'RampUp'
 
 Data_Preprocessing_Cart
 
@@ -24,36 +25,6 @@ u_mean = u_mean_(:, VoltageUsed);
     v_mean = v_mean_(:, VoltageUsed);
 %in case you use the mean of the measurements
     %v_mean = mean(v_mean_,2);
-
-%% fft of measured data
-
-% -------------------------------------------------------------------------
-% ---- model for speed output ---- 
-
-% -- fft -- 
-v_f = fft(v_mean);
-u_f = fft(u_mean);
-
-fs = 1/Ts;
-f = [0:(len-1)]*(fs/len);
-
-% frf opgesteld in fig3
-figure(20)
-subplot(2,1,1)
-semilogx(f, 20*log10(abs(v_f./u_f)))
-hold on
-box on
-ylabel('mag. [dB]')
-xlabel('\omega [rad/s]')
-title('magnitude')
-
-subplot(2,1,2)
-semilogx(f, unwrap(angle(v_f./u_f))*180/pi)
-hold on
-box on
-ylabel('ang. [°]')
-xlabel('\omega [rad/s]')
-title('phase')
 
 
 %% identification of the more realistic model
@@ -82,21 +53,6 @@ xlabel('t [s]')
 legend('simulation','measurement','input')
 title('Speed Step Response')
 
-% vergelijk bode diagrammen
-
-H5 = squeeze(freqresp(sys_5,2*pi*f));
-
-figure(20)
-subplot(2,1,1)
-hold on
-box on
-semilogx(f, 20*log10(abs(H5)))
-
-subplot(2,1,2)
-hold on
-box on
-semilogx(f, unwrap(angle(H5))*180/pi)
-
 %%
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
@@ -108,24 +64,6 @@ u_f = fft(u_mean);
 
 fs = 1/Ts;
 f = [0:(len-1)]*(fs/len);
-
-% frf opgesteld in fig3
-figure(40)
-subplot(2,1,1)
-semilogx(f, 20*log10(abs(th_f./u_f)))
-hold on
-box on
-ylabel('mag. [dB]')
-xlabel('\omega [rad/s]')
-title('magnitude')
-
-subplot(2,1,2)
-semilogx(f, unwrap(angle(th_f./u_f))*180/pi)
-hold on
-box on
-ylabel('ang. [°]')
-xlabel('\omega [rad/s]')
-title('phase')
 
 % -- least squ --
 b = th_mean(7:end);
@@ -150,19 +88,6 @@ legend('simulation','measurement','input')
 title('Position Step Response')
 
 % vergelijk bode diagrammen
-
-H6_th = squeeze(freqresp(sys_6_th,2*pi*f));
-
-figure(40)
-subplot(2,1,1)
-hold on
-box on
-semilogx(f, 20*log10(abs(H6_th)))
-
-subplot(2,1,2)
-hold on
-box on
-semilogx(f, unwrap(angle(H6_th))*180/pi)
 
 %% identification of the simple model
 
@@ -191,20 +116,6 @@ xlabel('t [s]')
 legend('sim 5th order','sim 2nd order','measurement','input')
 title('Speed Step Response')
 
-% vergelijk bode diagrammen
-H2 = squeeze(freqresp(sys_2,2*pi*f));
-
-figure(20)
-subplot(2,1,1)
-hold on
-box on
-semilogx(f, 20*log10(abs(H2)))
-
-subplot(2,1,2)
-hold on
-box on
-semilogx(f, unwrap(angle(H2))*180/pi)
-
 % vergelijk error
 error_2 = v_mean-steprp_2;
 error_5 = v_mean-steprp_5;
@@ -222,7 +133,8 @@ title('error of model vs measurements')
 % ------------------------------------------------------------------------
 % introduce pole limitation based on cancellations made between ZOH and
 % transformed terms of continuous system
-% H(z) = O(z)/O(z^3) met cte term in noemer = 0
+% H(z) = O(z)/O(z^3) met cte term in noemer = 0     
+% !!!!!!!!! moet dat hierboven niet O(z^2) zijn in de teller? !!!!!!!
 % ------------------------------------------------------------------------
 
 b = v_mean(4: end);
@@ -252,6 +164,42 @@ error_32z = v_mean - steprp_32z;
 
 figure(90)
 bode(sys_32z)
+
+%% Identification using further limitation on zeros
+% H(z) = O(z)/O(z^3) met cte term in noemer = 0     
+% ------------------------------------------------------------------------
+
+b = v_mean(4: end);
+A = [-v_mean(3:(end-1)) -v_mean(2:(end-2)) u_mean(2:(end-2)) u_mean(1:(end-3))];
+
+x = A\b;
+
+Num_31z = [0 x(3:end)'];
+Den_31z = [1 x(1:2)' 0];
+
+sys_31z = tf(Num_31z, Den_31z, Ts)
+
+figure(91)
+hold on
+box on
+steprp_31z = lsim(sys_31z,u_mean,t);
+plot(t,steprp_5)
+plot(t,steprp_32z)
+plot(t,steprp_31z)
+plot(t,v_mean)
+stairs(t,u_mean)
+xlabel('t [s]')
+legend('sim 5th order','sim 3th order (2 zero)','sim 3th order (1 zero)','measurement','input')
+title('Speed Step Response')
+
+% vergelijk responsen
+error_31z = v_mean - steprp_31z;
+
+figure(92)
+bode(sys_31z)
+
+figure(93) %difference between 2 and 1 zero model
+plot(t, steprp_32z-steprp_31z)
 
 %% Identification of realistic model with filtered Data
 %Model_Identification_filter

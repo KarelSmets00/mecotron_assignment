@@ -92,21 +92,5 @@ ylabel('angular speed [rad/s]')
 
 yyaxis right
 plot(t,alp)
-ylabel('angular acceleration [rad/s]')
+ylabel('angular accelea [rad/s]')
 
-figure(30)
-hold on
-box on
-yyaxis left
-plot(t,alp)
-ylabel('angular acceleration [rad/s]')
-
-yyaxis right
-plot(t,i_mean)
-ylabel('motor current [rad/s]')
-
-figure(40)
-hold on 
-box on
-plot(t,torque_cte)
-ylabel('generalized torque constant')

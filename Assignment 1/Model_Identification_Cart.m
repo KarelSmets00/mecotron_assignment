@@ -10,12 +10,16 @@
 % -------------------------------------------------------------------------
 
 %% data pre-processing
+
 clear all; close all;
 
-motor = 'A';            % choose wich motor to analyse
-window = 'RampUp'
 
-Data_Preprocessing_Cart
+motor = 'A';            % choose wich motor to analyse
+window = 'RampUp';                % choose wich motor to analyse
+folder = "singleStepCart";  % folder in wich loaded motor experiments are stored
+
+
+[data,t,u_mean_,th_mean_,v_mean_,Ts,len] = Data_Preprocessing(folder,motor,window);
 
 VoltageUsed = 2;
 th_mean = th_mean_(:, VoltageUsed);
@@ -88,6 +92,20 @@ legend('simulation','measurement','input')
 title('Position Step Response')
 
 % vergelijk bode diagrammen
+
+H5 = squeeze(freqresp(sys_5,2*pi*f));
+
+figure(20)
+subplot(2,1,1)
+hold on
+box on
+semilogx(f, 20*log10(abs(H5)))
+
+subplot(2,1,2)
+hold on
+box on
+semilogx(f, unwrap(angle(H5))*180/pi)
+
 
 %% identification of the simple model
 
@@ -204,4 +222,15 @@ plot(t, steprp_32z-steprp_31z)
 %% Identification of realistic model with filtered Data
 %Model_Identification_filter
 
+%% store results
 
+fileName = "sys_32z_cart";
+
+switch motor
+    case 'A'
+        model_A = sys_32z;
+        save(fileName,'model_A','-append')
+    case 'B'
+        model_B = sys_32z;
+        save(fileName,'model_B','-append')
+end

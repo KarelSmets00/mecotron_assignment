@@ -20,7 +20,7 @@ voltage = 3;
 
 periods = 5;
 %filename = "C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\Measured Data\StepInput\3V_2.0.csv";
-location = "C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\Measured Data\StepInput\singleStep\"
+filename = "C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\Measured Data\StepInput\singleStep\3V_2.0.csv"
 
 csvfile = filename;
 labels = strsplit(fileread(csvfile), '\n'); % Split file in lines

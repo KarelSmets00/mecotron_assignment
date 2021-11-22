@@ -24,14 +24,15 @@ class Robot : public MECOtron {
       float controlA[2] = {0.0, 0.0};
       float controlB[2] = {0.0, 0.0};
 
-      // Controller parameters
-      const float Kp = 1.112;
-      const float Ki = 19.7; 
-      const float Kd = 0.0; 
-      const float n0d0 = Kp + Ki*TSAMPLE/2 + 2*Kd/TSAMPLE; // 2.05
-      const float n1d0 = Ki*TSAMPLE - 4*Kd/TSAMPLE; // 0.1
-      const float n2d0 = -Kp + Ki*TSAMPLE/2 + 2*Kd/TSAMPLE; // -1.95
-      const float d2d0 = -1.0; 
+      // Controller parameters   
+      // Values are initialized here, this is needed!
+      float Kp = 0.0;
+      float Ki = 0.0; 
+      float Kd = 0.0; 
+      float n0d0 = Kp + Ki*TSAMPLE/2 + 2*Kd/TSAMPLE; // 2.05
+      float n1d0 = Ki*TSAMPLE - 4*Kd/TSAMPLE; // 0.1
+      float n2d0 = -Kp + Ki*TSAMPLE/2 + 2*Kd/TSAMPLE; // -1.95
+      float d2d0 = -1.0; 
 
   public:
     // Constructor

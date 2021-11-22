@@ -27,6 +27,8 @@ void Robot::control() {
     LED2(OFF);  // turn off LED 2
 
     float r = readValue(0);          //  use float channel 0 from QRC as the reference position (in radians)
+    // float Kp = readValue(9);
+    // float Ki = readValue(10)
     float eA = r-yA;                 //  calculate the position error of motor A (in radians)
     float eB = r-yB;                 //  calculate the position error of motor B (in radians)
 
@@ -85,6 +87,13 @@ bool Robot::controlEnabled() {
 void Robot::button0callback() {
   if(toggleButton(0)) {                          // Switches the state of button 0 and checks if the new state is true
     resetController();
+    Kp = readValue(9);
+    Ki = readValue(10);
+    Kd = readValue(11); 
+    n0d0 = Kp + Ki*TSAMPLE/2 + 2*Kd/TSAMPLE; // 2.05
+    n1d0 = Ki*TSAMPLE - 4*Kd/TSAMPLE; // 0.1
+    n2d0 = -Kp + Ki*TSAMPLE/2 + 2*Kd/TSAMPLE; // -1.95
+    d2d0 = -1.0; 
     message("Controller reset and enabled.");    // Display a message in the status bar of QRoboticsCenter
   }
   else {

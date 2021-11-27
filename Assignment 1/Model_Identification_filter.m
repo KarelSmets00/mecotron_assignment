@@ -33,7 +33,7 @@ f_cutoff = 70;
 
 v_mean_filt = filter(B_filt, A_filt, v_mean);
 th_mean_filt = filter(B_filt, A_filt, th_mean);
-u_mean_filt = filter(B_filt, A_filt, u_mean)
+u_mean_filt = filter(B_filt, A_filt, u_mean);
 
 b = v_mean_filt(4: end);
 A = [-v_mean_filt(3:(end-1)) -v_mean_filt(2:(end-2)) u_mean_filt(2:(end-2)) u_mean_filt(1:(end-3))];

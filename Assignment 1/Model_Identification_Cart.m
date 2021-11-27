@@ -129,8 +129,7 @@ title('error of model vs measurements')
 % ------------------------------------------------------------------------
 % introduce pole limitation based on cancellations made between ZOH and
 % transformed terms of continuous system
-% H(z) = O(z)/O(z^3) met cte term in noemer = 0     
-% !!!!!!!!! moet dat hierboven niet O(z^2) zijn in de teller? !!!!!!!
+% H(z) = O(z^2)/O(z^3) met cte term in noemer = 0     
 % ------------------------------------------------------------------------
 
 b = v_mean(4: end);
@@ -198,7 +197,7 @@ figure(93) %difference between 2 and 1 zero model
 plot(t, steprp_32z-steprp_31z)
 
 %% Identification of realistic model with filtered Data
-%Model_Identification_filter
+Model_Identification_filter
 
 %% store results
 

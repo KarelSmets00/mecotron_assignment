@@ -16,9 +16,10 @@
 clear all; close all;
 
 motor = 'B';            % choose wich motor to analyse
+window = 'RampUp';      % RampUp or RampDown
 folder = "singleStep";  % folder in wich unloaded motor experiments are stored
 
-[data,t,u_mean_,th_mean_,v_mean_,Ts,len] = Data_Preprocessing(folder,motor);
+[data,t,u_mean_,th_mean_,v_mean_,Ts,len] = Data_Preprocessing(folder,motor,window);
 
 VoltageUsed = 2;
 th_mean = th_mean_(:, VoltageUsed);
@@ -107,7 +108,7 @@ title('error of model vs measurements')
 % ------------------------------------------------------------------------
 % introduce pole limitation based on cancellations made between ZOH and
 % transformed terms of continuous system
-% H(z) = O(z)/O(z^3) met cte term in noemer = 0
+% H(z) = O(z^2)/O(z^3) met cte term in noemer = 0
 % ------------------------------------------------------------------------
 
 b = v_mean(4: end);
@@ -138,12 +139,48 @@ error_32z = v_mean - steprp_32z;
 figure(90)
 bode(sys_32z)
 
+%% Identification using further limitation on zeros
+% H(z) = O(z)/O(z^3) met cte term in noemer = 0     
+% ------------------------------------------------------------------------
+
+b = v_mean(4: end);
+A = [-v_mean(3:(end-1)) -v_mean(2:(end-2)) u_mean(2:(end-2)) u_mean(1:(end-3))];
+
+x = A\b;
+
+Num_31z = [0 x(3:end)'];
+Den_31z = [1 x(1:2)' 0];
+
+sys_31z = tf(Num_31z, Den_31z, Ts)
+
+figure(91)
+hold on
+box on
+steprp_31z = lsim(sys_31z,u_mean,t);
+plot(t,steprp_5)
+plot(t,steprp_32z)
+plot(t,steprp_31z)
+plot(t,v_mean)
+stairs(t,u_mean)
+xlabel('t [s]')
+legend('sim 5th order','sim 3th order (2 zero)','sim 3th order (1 zero)','measurement','input')
+title('Speed Step Response')
+
+% vergelijk responsen
+error_31z = v_mean - steprp_31z;
+
+figure(92)
+bode(sys_31z)
+
+figure(93) %difference between 2 and 1 zero model
+plot(t, steprp_32z-steprp_31z)
+
 %% Identification of realistic model with filtered Data
 Model_Identification_filter
 
 %% store results
 
-fileName = "sys_32z_motor";
+fileName = "sys_31zf_motor";
 
 switch motor
     case 'A'

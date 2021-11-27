@@ -29,7 +29,7 @@ title('phase')
 
 % ---- filtering ----
 f_cutoff = 70;
-[B_filt, A_filt] = butter(5, f_cutoff/fs);
+[B_filt, A_filt] = butter(4, f_cutoff/fs);
 
 v_mean_filt = filter(B_filt, A_filt, v_mean);
 th_mean_filt = filter(B_filt, A_filt, th_mean);
@@ -58,24 +58,24 @@ legend('sim 3rd order filter', 'sim 3rd order','measurement','input')
 title('Speed Step Response')
 
 % vergelijk bode diagrammen
-H5_f = squeeze(freqresp(sys_31z_f,2*pi*f));
-
-figure(20)
-subplot(2,1,1)
-hold on
-box on
-semilogx(f, 20*log10(abs(H5_f)))
-
-subplot(2,1,2)
-hold on
-box on
-semilogx(f, unwrap(angle(H5_f))*180/pi)
+% H5_f = squeeze(freqresp(sys_31z_f,2*pi*f));
+% 
+% figure(20)
+% subplot(2,1,1)
+% hold on
+% box on
+% semilogx(f, 20*log10(abs(H5_f)))
+% 
+% subplot(2,1,2)
+% hold on
+% box on
+% semilogx(f, unwrap(angle(H5_f))*180/pi)
 
 % vergelijk error
 error_31z_f = v_mean - steprp_31z_f;
 
 figure(130)
-hold on; box on;
+hold on; box on; grid on;
 plot(t, error_31z)
 plot(t, error_31z_f)
 xlabel('t [s]')

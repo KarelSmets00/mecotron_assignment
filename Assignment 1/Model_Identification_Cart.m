@@ -14,7 +14,7 @@
 clear all; close all;
 
 
-motor = 'B';            % choose wich motor to analyse
+motor = 'A';            % choose wich motor to analyse
 window = 'RampUp';                % choose wich motor to analyse
 folder = "singleStepCart";  % folder in wich loaded motor experiments are stored
 

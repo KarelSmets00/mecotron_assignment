@@ -39,7 +39,7 @@ v = lsim(G,u_mean,t);
 
 % compare
 
-i_start = find(t>0.04,1);
+i_start = find(t>0.08,1);
 i_stop = find(t>0.15,1);
 
 figure()
@@ -47,19 +47,17 @@ subplot(1,2,1)
 hold on
 box on
 grid on
-plot(t,u_mean)
 plot(t,v')
 plot(t,v_mean)
-ylabel({'motor vontage [V]';'angular verlocity [rad/s]'})
+ylabel('angular verlocity [rad/s]')
 xlabel('time t [s]')
-legend('input voltage','simulated','measured','location','southeast')
+legend('simulated','measured','location','southeast')
 
 subplot(1,2,2)
 hold on
 box on
 grid on
-plot(t(i_start:i_stop),u_mean(i_start:i_stop))
 plot(t(i_start:i_stop),v(i_start:i_stop)')
 plot(t(i_start:i_stop),v_mean(i_start:i_stop))
-ylabel({'motor vontage [V]';'angular verlocity [rad/s]'})
+ylabel('angular verlocity [rad/s]')
 xlabel('time t [s]')

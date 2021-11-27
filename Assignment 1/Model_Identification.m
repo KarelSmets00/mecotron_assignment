@@ -52,16 +52,16 @@ Den_5 = [1 x(1:4)' 0];
 
 sys_5 = tf(Num_5,Den_5,Ts)
 
-% figure(30)
-% hold on
-% box on
-% steprp_5 = lsim(sys_5,u_mean,t);
-% plot(t,steprp_5)
-% plot(t,v_mean)
-% stairs(t,u_mean)
-% xlabel('t [s]')
-% legend('simulation','measurement','input')
-% title('Speed Step Response')
+figure(30)
+hold on
+box on
+steprp_5 = lsim(sys_5,u_mean,t);
+plot(t,steprp_5)
+plot(t,v_mean)
+stairs(t,u_mean)
+xlabel('t [s]')
+legend('simulation','measurement','input')
+title('Speed Step Response')
 
 
 %% identification of the simple model
@@ -79,29 +79,29 @@ Den_2 = [1 x(1) 0];
 
 sys_2 = tf(Num_2, Den_2, Ts)
 
-% figure(60)
-% hold on
-% box on
-% steprp_2 = lsim(sys_2,u_mean,t);
-% plot(t,steprp_5)
-% plot(t,steprp_2)
-% plot(t,v_mean)
-% stairs(t,u_mean)
-% xlabel('t [s]')
-% legend('sim 5th order','sim 2nd order','measurement','input')
-% title('Speed Step Response')
-% 
-% % vergelijk error
-% error_2 = v_mean-steprp_2;
-% error_5 = v_mean-steprp_5;
-% 
-% figure(70)
-% hold on; box on;
-% plot(t, error_2)
-% plot(t, error_5)
-% xlabel('t [s]')
-% legend('error 2nd order', 'error 5th order')
-% title('error of model vs measurements')
+figure(60)
+hold on
+box on
+steprp_2 = lsim(sys_2,u_mean,t);
+plot(t,steprp_5)
+plot(t,steprp_2)
+plot(t,v_mean)
+stairs(t,u_mean)
+xlabel('t [s]')
+legend('sim 5th order','sim 2nd order','measurement','input')
+title('Speed Step Response')
+
+% vergelijk error
+error_2 = v_mean-steprp_2;
+error_5 = v_mean-steprp_5;
+
+figure(70)
+hold on; box on;
+plot(t, error_2)
+plot(t, error_5)
+xlabel('t [s]')
+legend('error 2nd order', 'error 5th order')
+title('error of model vs measurements')
 
 
 %% Identification using limitation on poles
@@ -121,23 +121,23 @@ Den_32z = [1 x(1:2)' 0];
 
 sys_32z = tf(Num_32z, Den_32z, Ts)
 
-% figure(80)
-% hold on
-% box on
-% steprp_32z = lsim(sys_32z,u_mean,t);
-% plot(t,steprp_5)
-% plot(t,steprp_32z)
-% plot(t,v_mean)
-% stairs(t,u_mean)
-% xlabel('t [s]')
-% legend('sim 5th order','sim 3th order (2 zero)','measurement','input')
-% title('Speed Step Response')
+figure(80)
+hold on
+box on
+steprp_32z = lsim(sys_32z,u_mean,t);
+plot(t,steprp_5)
+plot(t,steprp_32z)
+plot(t,v_mean)
+stairs(t,u_mean)
+xlabel('t [s]')
+legend('sim 5th order','sim 3th order (2 zero)','measurement','input')
+title('Speed Step Response')
 
-% % vergelijk responsen
-% error_32z = v_mean - steprp_32z;
-% 
-% figure(90)
-% bode(sys_32z)
+% vergelijk responsen
+error_32z = v_mean - steprp_32z;
+
+figure(90)
+bode(sys_32z)
 
 
 %% Identification using further limitation on zeros

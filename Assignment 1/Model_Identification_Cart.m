@@ -14,7 +14,7 @@
 clear all; close all;
 
 
-motor = 'A';            % choose wich motor to analyse
+motor = 'B';            % choose wich motor to analyse
 window = 'RampUp';                % choose wich motor to analyse
 folder = "singleStepCart";  % folder in wich loaded motor experiments are stored
 
@@ -220,5 +220,16 @@ switch motor
         save(fileName,'model_A','-append')
     case 'B'
         model_B = sys_31z;
+        save(fileName,'model_B','-append')
+end
+
+fileName = "sys_31zf_cart";
+
+switch motor
+    case 'A'
+        model_A = sys_31z_f;
+        save(fileName,'model_A','-append')
+    case 'B'
+        model_B = sys_31z_f;
         save(fileName,'model_B','-append')
 end

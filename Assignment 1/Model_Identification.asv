@@ -163,6 +163,7 @@ plot(t,v_mean)
 stairs(t,u_mean)
 xlabel('t [s]')
 legend('simulated output','measured output','input')
+title('Speed Step Response')
 
 % vergelijk responsen
 error_31z = v_mean - steprp_31z;
@@ -172,28 +173,19 @@ bode(sys_31z)
 
 %% Identification of realistic model with filtered Data
 
-Model_Identification_filter
+%Model_Identification_filter
 
 %% store results
 
-% fileName = "sys_32z_motor";
-% 
-% switch motor
-%     case 'A'
-%         model_A = sys_32z;
-%         save(fileName,'model_A','-append')
-%     case 'B'
-%         model_B = sys_32z;
-%         save(fileName,'model_B','-append')
-% end
-
-fileName = "sys_31z";
+fileName = "sys_32z_motor";
 
 switch motor
     case 'A'
-        model_A = sys_31z;
+        model_A = sys_32z;
         save(fileName,'model_A','-append')
     case 'B'
-        model_B = sys_31z;
+        model_B = sys_32z;
         save(fileName,'model_B','-append')
 end
+
+

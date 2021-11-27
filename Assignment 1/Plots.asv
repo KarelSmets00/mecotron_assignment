@@ -44,15 +44,13 @@ plot(t, steprp_31z_f)
 plot(t,v_mean)
 xlabel('t [s]')
 ylabel('angular velocity output [rad/s]')
-legend('simulated output without filter','simulated output with filter', ...
-    'measured output', 'Location','southeast')
+legend('simulated output with filtering','measured output')
 
 %difference plot
 figure
 hold on 
 box on
-plot(t, steprp_31z-v_mean)
 plot(t, steprp_31z_f-v_mean)
 xlabel('t')
 ylabel('error [rad/s]')
-legend('simulated output without filter-measured output', 'simulated output with filter-measured output')
+legend('simulated output-measured output')

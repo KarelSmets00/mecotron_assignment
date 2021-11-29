@@ -16,6 +16,10 @@ class Robot : public MECOtron {
   private:
 
     // Member variables
+      // boolean to reset reference value to 0
+      bool driving = true;
+      float r = 0.0;
+      
       // Remember the 2 previous errors
       float errorA[2] = {0.0, 0.0};
       float errorB[2] = {0.0, 0.0};
@@ -47,7 +51,8 @@ class Robot : public MECOtron {
 
     void button0callback();
     void button1callback();
-
+    void button2callback();
+    
     // Controller related functions
     void resetController(); 
 

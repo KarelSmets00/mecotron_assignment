@@ -3,9 +3,10 @@
 clear all; close all;
 
 motor = 'B';                % choose wich motor to analyse
-folder = "singleStepCart";  % folder in wich loaded motor experiments are stored
+window = 'RampUp';          % RampUp or RampDown
+folder = "singleStep";      % folder in wich loaded motor experiments are stored
 
-[data,t,u_mean_,th_mean_,v_mean_] = Data_Preprocessing(folder,motor);
+[data,t,u_mean_,th_mean_,v_mean_] = Data_Preprocessing(folder,motor,window);
 
 
 

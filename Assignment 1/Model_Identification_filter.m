@@ -81,3 +81,5 @@ plot(t, error_31z_f)
 xlabel('t [s]')
 legend('error 3rd order', 'error 3rd filter order')
 title('error of model vs measurements')
+
+

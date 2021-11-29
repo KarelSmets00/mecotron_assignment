@@ -26,7 +26,10 @@ void Robot::control() {
     LED1(ON);   // turn on LED 1
     LED2(OFF);  // turn off LED 2
 
-    float r = readValue(0);          //  use float channel 0 from QRC as the reference position (in radians)
+    if (driving == true){
+    r = readValue(0);          //  use float channel 0 from QRC as the reference position (in radians)
+    }
+    
     // float Kp = readValue(9);
     // float Ki = readValue(10)
     float eA = r-yA;                 //  calculate the position error of motor A (in radians)
@@ -87,6 +90,7 @@ bool Robot::controlEnabled() {
 void Robot::button0callback() {
   if(toggleButton(0)) {                          // Switches the state of button 0 and checks if the new state is true
     resetController();
+    // driving = true;
     Kp = readValue(9);
     Ki = readValue(10);
     Kd = readValue(11); 
@@ -105,4 +109,16 @@ void Robot::button1callback() {
   toggleButton(1);
   init();                         // Reset the MECOtron and reinitialize the Robot object
   message("Reset.");
+}
+
+void Robot::button2callback(){
+  if (toggleButton(2)){
+    driving = false;
+    r = 0.0;
+    message("reference velocity set to 0");
+  }
+  else {
+    driving = true;
+    message("driving enabled");
+  }
 }

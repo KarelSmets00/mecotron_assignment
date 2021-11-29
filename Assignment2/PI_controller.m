@@ -1,4 +1,4 @@
-close all; clear all;
+close all; clear all; clc; 
 
 %% main code
 
@@ -8,7 +8,7 @@ sys_G = load("C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assi
 sys_G = sys_G.model_B;    % kies motor om mee te werken  
 
 Ts = sys_G.Ts
-PM = 70;
+PM = 75;
 SM = 15;
 
 % bereken gezochte fase

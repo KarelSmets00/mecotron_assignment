@@ -30,11 +30,18 @@ class Robot : public MECOtron {
 
       // Controller parameters   
       // Values are initialized here, this is needed!
-      float Kp = 0.0;
-      float Ki = 0.0; 
-      float Kd = 0.0; 
-      float C = Kp+Ki*TSAMPLE/2;
-      float D = Ki*TSAMPLE/2 - Kp;
+//      float Kp = 0.0;
+//      float Ki = 0.0; 
+//      float Kd = 0.0; 
+//      float C = 0.0;
+//      float D = 0.0;
+//      // float C = Kp+Ki*TSAMPLE/2;
+//      // float D = Ki*TSAMPLE/2 - Kp;
+
+      float Kp = 0.6977;
+      float Ki = 6.1432 ; 
+      float C = Kp+(Ki*TSAMPLE/2);
+      float D = (Ki*TSAMPLE/2) - Kp;
 
   public:
     // Constructor

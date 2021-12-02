@@ -5,7 +5,7 @@ close all; clear all;
 %% main code
 
 %sys_G = load("C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assignment 1\sys_31z_cart.mat");  % kies model om mee te werken
-sys_G = load("C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\sys_31z_cart.mat");  % kies model om mee te werken
+sys_G = load("C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assignment\Assignment 1\sys_31zf_cart.mat");  % kies model om mee te werken
 sys_G = sys_G.model_A;    % kies motor om mee te werken  
 
 Ts = sys_G.Ts

@@ -54,7 +54,9 @@ void Robot::control() {
     writeValue(4, eB);    // should go to zero
     writeValue(5, uA);    // should (preferably) remain between -12V and 12V
     writeValue(6, uB);    // should (preferably) remain between -12V and 12V
-
+    writeValue(7, C);
+    writeValue(8, D);
+    
   } else {
     /* If the control is disabled, then ... */
 
@@ -86,11 +88,11 @@ void Robot::button0callback() {
   if(toggleButton(0)) {                          // Switches the state of button 0 and checks if the new state is true
     resetController();
     // driving = true;
-    Kp = readValue(9);
-    Ki = readValue(10);
-    Kd = readValue(11); 
-    float C = Kp+Ki*TSAMPLE/2;
-    float D = Ki*TSAMPLE/2 - Kp;
+//    Kp = readValue(9);
+//    Ki = readValue(10);
+//    Kd = readValue(11); 
+//    float C = Kp+(Ki*TSAMPLE/2);
+//    float D = (Ki*TSAMPLE/2) - Kp;
     message("Controller reset and enabled.");    // Display a message in the status bar of QRoboticsCenter
   }
   else {

@@ -8,7 +8,7 @@ sys_G = load("C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assi
 sys_G = sys_G.model_B;    % kies motor om mee te werken  
 
 Ts = sys_G.Ts
-PM = 75;
+PM = 80;
 SM = 15;
 
 % bereken gezochte fase

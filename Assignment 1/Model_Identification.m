@@ -15,7 +15,7 @@
 
 clear all; close all;
 
-motor = 'B';            % choose wich motor to analyse
+motor = 'A';            % choose wich motor to analyse
 window = 'RampUp';      % RampUp or RampDown
 folder = "singleStep";  % folder in wich unloaded motor experiments are stored
 

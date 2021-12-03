@@ -4,17 +4,17 @@ close all; clear all; clc;
 
 sys_G = load("..\Assignment 1\sys_31zf_cart.mat")  % kies model om mee te werken
 
-motor = 'B'
+motor = 'A'
 model = "model_"+motor;
 sys_G = sys_G.(model);    % kies motor om mee te werken  
 
 Ts = sys_G.Ts
-PM = 133;
+PM = 75;
 SM = 15;
 
 % bereken gezochte fase
 
-desired_phase = -180 + PM + SM;
+desired_phase = -180 + PM + 90;
 
 % haal nodige parameters uit G bode plot
 
@@ -32,38 +32,29 @@ mag_G = mag(w_index)
 
 Ti = tan((pi/2)-(SM*2*pi/360))/wc
 
-% determine magnitude of PI controller with unity dc gain (P=1)
-num_D = [(1+0.5*Ts/Ti) (-1+0.5*Ts/Ti)];
-den_D = [1 -1];
+sys_I = (Ts/(2*Ti))*tf([1 1],[1 -1],Ts)
 
-sys_D = tf(num_D,den_D,Ts);
-
-% haal nodige parameters uit D bode plot
-[mag,phase,w] = bode(sys_D,w_as);
+% gain goed zetten
+[mag,phase,w] = bode(sys_I,w_as);
 mag = squeeze(mag);
 phase = squeeze(phase);
 w = squeeze(w);
 
-mag_D = mag(w_index)
+mag_I = mag(w_index)
 
-% bereken Kp om gain crossover te bereigen in loop gain @ wc
-Kp = 1/(mag_D*mag_G)
+K = 1/(mag_G*mag_I)
 
-% Ki volgt uit Ti
-Ki = Kp/Ti
-
-% controller
-sys_D = sys_D*Kp
+sys_I = sys_I*K;
 
 % loop gain (unity FB)
-sys_L = sys_G*sys_D
+sys_L = sys_G*sys_I
 
 % closed loop sys
 sys_CL = feedback(sys_L,1)
 
 % plot
 figure()
-bode(sys_D)
+bode(sys_I)
 
 figure()
 bode(sys_L)
@@ -75,17 +66,17 @@ bode(sys_CL)
 figure()
 step(sys_CL)
 
-
 %% STORE CONTROLLER
 
-fileName = "C_PI";
+fileName = "C_I";
 
 switch motor
     case 'A'
-        motor_A = sys_D;
+        motor_A = sys_I;
         save(fileName,'motor_A','-append')
     case 'B'
-        motor_B = sys_D;
+        motor_B = sys_I;
         save(fileName,'motor_B','-append')
 end
+
 

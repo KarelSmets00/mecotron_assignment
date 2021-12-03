@@ -6,12 +6,12 @@ sys_G = load("C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assi
 sys_G = sys_G.model_A;    % kies motor om mee te werken  
 
 Ts = sys_G.Ts
-PM = 60;
+PM = 120;
 SM = 15;
 Lead_phase = 55;
 
 phi = -180+PM-Lead_phase+SM
-alpha = 0.9;
+alpha = 0.5;
 
 w = logspace(-2,4,400);		
 [mag_P, phase_P] = bode(sys_G,w);
@@ -37,7 +37,7 @@ wc_lead = interp1(phase_P, w, phi)
 
 T = 1/(wc_lead*sqrt(alpha))
 
-sys_L = tf([(2*T+Ts) (Ts-2*T)], [(2*alpha*T) (Ts-2*alpha*T)], Ts)
+sys_L = tf([(2*T+Ts) (Ts-2*T)], [(2*alpha*T+Ts) (Ts-2*alpha*T)], Ts)
 sys_LG = sys_L * sys_G;
 
 [mag_LG, phase_LG] = bode(sys_LG,w);

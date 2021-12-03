@@ -8,7 +8,7 @@ sys_G = load("C:\Users\mschi\Documents\Unief\Sem M1\Control Theory\mecotron_assi
 sys_G = sys_G.model_B;    % kies motor om mee te werken  
 
 Ts = sys_G.Ts
-PM = 133;
+PM = 45;
 SM = 15;
 
 % bereken gezochte fase
@@ -29,7 +29,7 @@ w_index = find(phase<desired_phase,1);
 wc = w(w_index)
 mag_G = mag(w_index)
 
-Ti = tan((pi/2)-(SM*2*pi/360))/wc
+Ti = 0.25
 
 % determine magnitude of PI controller with unity dc gain (P=1)
 num_D = [(1+0.5*Ts/Ti) (-1+0.5*Ts/Ti)];
@@ -46,7 +46,7 @@ w = squeeze(w);
 mag_D = mag(w_index)
 
 % bereken Kp om gain crossover te bereigen in loop gain @ wc
-Kp = 1/(mag_D*mag_G)
+Kp = 1/(mag_D*mag_G*1.5)
 
 % Ki volgt uit Ti
 Ki = Kp/Ti

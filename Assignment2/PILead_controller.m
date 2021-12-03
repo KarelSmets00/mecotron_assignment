@@ -8,7 +8,7 @@ sys_G = load("C:\Users\Karel\Documents\Leuven\Master\Regeltechniek\Mecotron\Assi
 sys_G = sys_G.model_A;    % kies motor om mee te werken  
 
 Ts = sys_G.Ts
-PM = 50;
+PM = 140;
 SM = 15;
 Lead_phase = 55;
 
@@ -32,7 +32,7 @@ mag_G = mag(w_index)
 
 
 %% lead design
-alpha = 0.1;
+alpha = 0.6;
 
 Tl = 1/(wc*sqrt(alpha));
 

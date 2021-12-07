@@ -36,22 +36,33 @@ void Robot::control() {
 
   if(controlEnabled()) {   // only do this if controller is enabled (triggered by pushing 'Button 0' in QRoboticsCenter)
 
-    // // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT POSITION CONTROLLER
-    //float desired_position = readValue(0);      // use channel 0 to provide the constant position reference
-    //xref(0) = ? ;                               // transform desired_position to the state reference (make sure units are consistent)
-    //K(0) = ? ;                                  // state feedback gain K, to design
-    //desired_velocity = K * (xref - _xhat);      // calculate the state feedback signal, (i.e. the input for the velocity controller)
+    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT POSITION CONTROLLER
+    float desired_position = readValue(0);      // use channel 0 to provide the constant position reference
+    xref(0) = 0.15 ;                               // transform desired_position to the state reference (make sure units are consistent)
+    K(0) = 100 ;                                  // state feedback gain K, to design
+    desired_velocity = K * (xref - _xhat);      // calculate the state feedback signal, (i.e. the input for the velocity controller)
 
-    //// UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT VELOCITY CONTROLLER
-    // ...
-    // ...                                          // implement your velocity controller here (assignment 2), such that the motors track velocity v
-    // ...
-    //volt_A =
-    //volt_B =
+    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT VELOCITY CONTROLLER
+                                              // implement your velocity controller here (assignment 2), such that the motors track velocity v
+    // Read the motor positions
+    float yA = getSpeedMotorA();  //  read the encoder of motor A (in radians)
+    float yB = getSpeedMotorB();  //  read the encoder of motor B (in radians)
 
-    //// COMMENT OR REMOVE LINES BELOW ONCE YOU IMPLEMENT THE VELOCITY CONTROLLER
-    volt_A = 0.0;
-    volt_B = 0.0;
+    r = desired_velocity(0);          //  use float channel 0 from QRC as the reference position (in radians)
+
+    float eA = r-yA;                 //  calculate the position error of motor A (in radians)
+    float eB = r-yB;                 //  calculate the position error of motor B (in radians)
+
+    // the actual control algorithm
+    float uA = controlA + C_A*(eA+errorA);        // the difference equation
+    float uB = controlB + C_B*(eB+errorB);        // the difference equation
+
+    // store the new errors and new control signals in a member variable
+    errorA = eA; errorB = eB; controlA = uA; controlB = uB;    // append the new values
+
+    // COMMENT OR REMOVE LINES BELOW ONCE YOU IMPLEMENT THE VELOCITY CONTROLLER
+    volt_A = uA;
+    volt_B = uB;
 
     // Send wheel speed command
     setVoltageMotorA(volt_A);
@@ -87,18 +98,26 @@ void Robot::control() {
 
 void Robot::resetController(){
   // Set all errors and control signals in the memory back to 0
-  // ...
-  // ...
+  float r = 0.0;
+  float eA = 0.0;
+  float eB = 0.0;
+  float uA = 0.0;
+  float uB = 0.0;
+  errorA = 0.0;
+  errorB = 0.0;
+  controlA = 0.0;
+  controlB = 0.0;
+  
 }
 
 void Robot::resetKalmanFilter() {
-  // // UNCOMMENT AND MODIFIES LINES BELOW TO IMPLEMENT THE RESET OF THE KALMAN FILTER
-  // // Initialize state covariance matrix
-  // _Phat.Fill(0);      // Initialize the covariance matrix
-  // _Phat(0,0) = ?;     // Fill the initial covariance matrix, you can change this according to your experiments
-  //
-  // // Initialize state estimate
-  // _xhat(0) = 0.0;     // Change this according to your experiments
+  // UNCOMMENT AND MODIFIES LINES BELOW TO IMPLEMENT THE RESET OF THE KALMAN FILTER
+  // Initialize state covariance matrix
+  _Phat.Fill(1);      // Initialize the covariance matrix
+  _Phat(0,0) = 0.0025;     // Fill the initial covariance matrix, you can change this according to your experiments
+  
+  // Initialize state estimate
+  _xhat(0) = 0,15;     // Change this according to your experiments
 }
 
 bool Robot::controlEnabled() {

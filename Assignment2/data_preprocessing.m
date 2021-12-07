@@ -4,9 +4,9 @@ PI_controller   %make sure PM=80!!!!
 
 
 folder = "V2withFilter"       % "withFilter" or "withoutFilter"
-slope = 'f10'                 % "s7"=slope or ... 
+slope = "f10"                 % "s7"=slope or ... 
 
-verbose = 0; 
+verbose = 1; 
 plot_report = 1;
 
 
@@ -21,7 +21,7 @@ len = 200;
 
 
 for i = 1:3
-    
+    %file = slope + int2str(i) + ".csv";
     file = slope + "_PM80_" + int2str(i) +".csv"
     %file = append(slope,"_",int2str(i),".csv");
     filename = append(location,file);
@@ -31,7 +31,7 @@ for i = 1:3
     labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
     data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
     
-    i_start = find(data_temp(:,3)>9);
+    i_start = find(data_temp(:,4)>9);
     data(:,:,i) = data_temp(((i_start-shift):(i_start+len-1-shift)),:);
    
 end

@@ -1,0 +1,1 @@
+PI-controllerV3 implements a different PI controller for each DC-motor. 

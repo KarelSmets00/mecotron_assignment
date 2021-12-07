@@ -9,7 +9,7 @@ model = "model_"+motor;
 sys_G = sys_G.(model);    % kies motor om mee te werken  
 
 Ts = sys_G.Ts
-PM = 133;
+PM = 80;
 SM = 15;
 
 % bereken gezochte fase

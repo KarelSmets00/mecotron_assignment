@@ -4,7 +4,7 @@ close all; clear all; clc;
 
 sys_G = load("..\Assignment 1\sys_31zf_cart.mat")  % kies model om mee te werken
 
-motor = 'A'
+motor = 'B'
 model = "model_"+motor;
 sys_G = sys_G.(model);    % kies motor om mee te werken  
 
@@ -43,9 +43,10 @@ w = squeeze(w);
 mag_I = mag(w_index)
 
 K = 1/(mag_G*mag_I)
+Ki = K/Ti
 
 sys_I = sys_I*K;
-
+sys_D = sys_I;          % allows data_preprocessing to calculate control signals
 % loop gain (unity FB)
 sys_L = sys_G*sys_I
 

@@ -23,17 +23,16 @@ void Robot::control() {
   desired_velocity.Fill(0); //Initialize matrix with zeros
   
   // Kalman filtering
-  if(KalmanFilterEnabled()) {   // only do this if controller is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
+  if(controlEnabled()) {   // only do this if controller is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
     // Correction step
     Matrix<1> distance_measurement;                                     // define a vector of length 1
     distance_measurement(0) = getFrontDistance();                       // front distance
-    CorrectionUpdate(distance_measurement, _xhat, _Phat, _nu, _S, _L);     // do the correction step -> update _xhat, _Phat, _nu, _S
+    CorrectionUpdate(distance_measurement, _xhat, _Phat, _nu, _S);     // do the correction step -> update _xhat, _Phat, _nu, _S
   }
 
   // write values to Qrobotics
   writeValue(3, _Phat(0)); // a posteriori state covariance
-  writeValue(4,_L(0));
-  writeValue(8, _xhat(0)); // a posteriori state estimate
+  writeValue(8, - (_xhat(0))); // a posteriori state estimate
   // writeValue(9, _Phat(0)); // a posteriori state covariance
   writeValue(10, _nu(0)); // innovation
   writeValue(11, _S(0));  // innovation covariance
@@ -44,7 +43,7 @@ void Robot::control() {
     // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT POSITION CONTROLLER
     float desired_position = readValue(0);      // use channel 0 to provide the constant position reference
     xref(0) = -0.01*desired_position ;                               // transform desired_position to the state reference (make sure units are consistent)
-    K(0) = 50;                                  // state feedback gain K, to design
+    K(0) = 55;                                  // state feedback gain K, to design
     desired_velocity = K * (xref - _xhat);      // calculate the state feedback signal, (i.e. the input for the velocity controller)
 
     // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT VELOCITY CONTROLLER
@@ -81,7 +80,7 @@ void Robot::control() {
   }
 
   // Kalman filtering     
-  if(KalmanFilterEnabled()) {   // only do this if controller is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
+  if(controlEnabled()) {   // only do this if controller is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
     // Prediction step
     PredictionUpdate(desired_velocity, _xhat, _Phat);                    // do the prediction step -> update _xhat and _Phat
   }
@@ -134,8 +133,10 @@ bool Robot::KalmanFilterEnabled() {
 }
 
 void Robot::button0callback() {
-  if(toggleButton(0)) {           // Switches the state of button 0 and checks if the new state is true
+  if(toggleButton(0)) {           // Switches the state of button 0 and checks if the new state is trueq
     resetController();
+    resetKalmanFilter();            // Reset the Kalman filter
+    writeValue(8,_xhat(0));
     message("Controller resed and enabled.");    // Display a message in the status bar of QRoboticsCenter
   }
   else {

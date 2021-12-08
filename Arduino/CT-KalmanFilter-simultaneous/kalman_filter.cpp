@@ -4,7 +4,7 @@
 void PredictionUpdate(const Matrix<1> &u, Matrix<1> &xhat, Matrix<1,1> &Phat) {
    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT PredictionUpdate OF THE KALMAN FILTER
    // Tuning parameter
-   float arrayQ[1][1]{{ 1e-3 }}; //Provide here the element values of weight Q
+   float arrayQ[1][1]{{ 1e-8 }}; //Provide here the element values of weight Q
    Matrix<1,1> Q = arrayQ;
   
    // System A&B-matrix
@@ -25,6 +25,7 @@ void CorrectionUpdate(const Matrix<1> &y, Matrix<1> &xhat, Matrix<1,1> &Phat, Ma
    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT CorrectionUpdate OF THE KALMAN FILTER
    // Tuning parameter
    float arrayR[1][1]{{ 9.5199e-7 }}; //Provide here the element values of weight R
+                                      //9.5199e-7 is value from MATLAB
    Matrix<1,1> R = arrayR;
   
    // System C-matrix - measurement equation

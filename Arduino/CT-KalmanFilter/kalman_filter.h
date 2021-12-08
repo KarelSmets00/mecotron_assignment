@@ -5,6 +5,6 @@
 #include "mecotron.h" // Include MECOTRON header
 
 void PredictionUpdate(const Matrix<1> &u, Matrix<1> &xhat, Matrix<1,1> &Phat);
-void CorrectionUpdate(const Matrix<1> &y, Matrix<1> &xhat, Matrix<1,1> &Phat, Matrix<1> &nu, Matrix<1,1> &S);
+void CorrectionUpdate(const Matrix<1> &y, Matrix<1> &xhat, Matrix<1,1> &Phat, Matrix<1> &nu, Matrix<1,1> &S, Matrix<1,1> &L);
 
 #endif // KALMAN_FILTER_H

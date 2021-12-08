@@ -24,6 +24,7 @@ class Robot : public MECOtron {
     Matrix<1,1> _Phat;    // state estimate covariance
     Matrix<1> _nu;        // innovation vector
     Matrix<1,1> _S;       // innovation covariance
+    Matrix<1,1> _L;       // optimal kalman gain
 
     // Position controller
     Matrix<1> xref;       // reference state

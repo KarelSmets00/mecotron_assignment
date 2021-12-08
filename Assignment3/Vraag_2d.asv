@@ -1,0 +1,7 @@
+clear all
+
+Q = $$$;
+R = $$$;
+
+Pss = 0.5*(sqrt(Q*(Q-4*R))-3*Q)
+Lss = 

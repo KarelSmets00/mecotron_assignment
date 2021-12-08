@@ -1,11 +1,13 @@
 clear all
 
-Q = 10;
-R = 1;
+Q = 0.1;
+R = 100;
 A = 1;
 C = -1;
 
-Pss = 0.5*(sqrt(Q*(Q-4*R))-3*Q)
-Lss = (sqrt(Q*(Q-4*R))-Q)/(sqrt(Q*(Q-4*R))-Q+2*R)
+rho = Q/R;
+
+Pss = 0.5*Q*(sqrt(1+4/rho)-1)
+Lss = -(1+sqrt(1+4/rho))/(1+sqrt(1+4/rho)+2/rho)
 
 Llqe = dlqr(A',A'*C',Q,R)'

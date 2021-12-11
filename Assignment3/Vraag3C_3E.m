@@ -1,20 +1,20 @@
 close all; clear all;
 
-[data_R,files_R,t,Ts,len] = Data_Preprocessing('.\measured data\Vraag3C\R9.5199e_7\',400);      %_R means for cte R, Q is variating
-[data_Q,files_Q,t,Ts,len] = Data_Preprocessing('.\measured data\Vraag3C\Qe_8\',400);            %_Q means for cte R, R is variating
+[data_R,files_R,t,Ts,len] = Data_Preprocessing('.\measured data\Vraag3C\R9.5199e_7\',400,0);      %_R means for cte R, Q is variating
+[data_Q,files_Q,t,Ts,len] = Data_Preprocessing('.\measured data\Vraag3C\Qe_8\',400,0);            %_Q means for cte R, R is variating
 
-% t_R = data_R(:,1);                  
-% VoltA_R = data_R(:,2);             
-% VoltB_R = data_R(:,3);             
-% DesiredVelocity_R = data_R(:,4);    
-% Phat_R = data_R(:,5);              
-% L_R = data_R(:,6);                 
-% vA_R = data_R(:,7);                 
-% vB_R = data_R(:,8);                
-% FrontDistance_R = data_R(:,9);      
-% xhat_R = data_R(:,10);             
-% nu_R = data_R(:,12);                
-% S_R = data_R(:,13);                
+% t = data(:,1);                  
+% VoltA = data(:,2);             
+% VoltB = data(:,3);             
+% DesiredVelocity = data(:,4);    
+% Phat = data(:,5);              
+% L = data(:,6);                 
+% vA = data(:,7);                 
+% vB = data(:,8);                
+% FrontDistance = data(:,9);      
+% xhat = data(:,10);             
+% nu = data(:,12);                
+% S = data(:,13);           
 
 % -------- VRAAG C --------
 figure

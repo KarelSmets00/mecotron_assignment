@@ -1,4 +1,4 @@
-function [data,files,t,Ts,len] = Data_Preprocessing(folder,len)
+function [data,files,t,Ts,len] = Data_Preprocessing(folder,len,vraagb)
 
     % -- Data pre-processing --
 
@@ -28,9 +28,13 @@ function [data,files,t,Ts,len] = Data_Preprocessing(folder,len)
         labels = strsplit(fileread(csvfile), '\n'); % Split file in lines
         labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
         data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
-
-        i_start = find(data_temp(:,10)==-0.15,1);
-        data(:,:,(i)) = data_temp((i_start:(i_start+len-1)),:);
+        
+        if vraagb
+            i_start = find(data_temp(:,11)==-0.2,1);
+        else 
+            i_start = find(data_temp(:,10)==-0.15,1);
+        end
+        data(:,:,(i)) = data_temp((i_start-30:(i_start+len-1-30)),:);
 
     end
 

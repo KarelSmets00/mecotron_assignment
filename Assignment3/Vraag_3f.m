@@ -11,7 +11,7 @@ L = acker(A, A*C, exp(-Ts*R*K/10))
 
 
 %% plots
-[data,files,t,Ts,len] = Data_Preprocessing('.\measured data\Vraag3F\',2500);
+[data,files,t,Ts,len] = Data_Preprocessing('.\measured data\Vraag3F\',2500,0);
 
 figure
 hold on

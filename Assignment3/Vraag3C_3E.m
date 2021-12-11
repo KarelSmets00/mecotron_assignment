@@ -70,7 +70,7 @@ for i = 1:c
     plot(t, data_R(:,9,i))
     plot(t, -data_R(:,10,i))
     xlabel("t [s]")
-    ylabel("state 1")
+    ylabel("State 1 [m]")
     legend("Measured front distance", "estimated state")
     
 end
@@ -83,7 +83,7 @@ for i = 1:c
     plot(t, data_Q(:,9,i))
     plot(t, -data_Q(:,10,i))
     xlabel("t [s]")
-    ylabel("state 1")
+    ylabel("State 1 [m]")
     legend("Measured front distance", "estimated state")
     
 end
@@ -100,7 +100,7 @@ for i = 1:c
     plot(t, data_R(:,9,i))
     plot(t, -data_R(:,10,i))
     xlabel("t [s]")
-    ylabel("state 1")
+    ylabel("State 1 [m]")
     legend("Measured front distance", "estimated state")
     
 end
@@ -116,7 +116,7 @@ for i = 1:c
     plot(t, data_Q(:,9,i))
     plot(t, -data_Q(:,10,i))
     xlabel("t [s]")
-    ylabel("state 1")
+    ylabel("State 1 [m]")
     legend("Measured front distance", "estimated state")
     
 end

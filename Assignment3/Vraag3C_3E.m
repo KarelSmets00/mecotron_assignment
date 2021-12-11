@@ -66,7 +66,7 @@ end
 for i = 1:c
     figure
     hold on 
-    title(files_R(i+2))
+    title(files_R(i))
     plot(t, data_R(:,9,i))
     plot(t, -data_R(:,10,i))
     xlabel("t [s]")
@@ -79,7 +79,7 @@ end
 for i = 1:c
     figure
     hold on 
-    title(files_Q(i+2))
+    title(files_Q(i))
     plot(t, data_Q(:,9,i))
     plot(t, -data_Q(:,10,i))
     xlabel("t [s]")
@@ -96,7 +96,7 @@ title("constant R, varying Q")
 for i = 1:c
     subplot(c,1,i)
     hold on
-    title(files_R(i+2))
+    title(files_R(i))
     plot(t, data_R(:,9,i))
     plot(t, -data_R(:,10,i))
     xlabel("t [s]")
@@ -112,7 +112,7 @@ title("constant Q, varying R")
 for i = 1:c
     subplot(c,1,i)
     hold on 
-    title(files_Q(i+2))
+    title(files_Q(i))
     plot(t, data_Q(:,9,i))
     plot(t, -data_Q(:,10,i))
     xlabel("t [s]")

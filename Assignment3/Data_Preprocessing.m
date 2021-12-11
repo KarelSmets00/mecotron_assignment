@@ -31,10 +31,12 @@ function [data,files,t,Ts,len] = Data_Preprocessing(folder,len,vraagb)
         
         if vraagb
             i_start = find(data_temp(:,11)==-0.2,1);
+            data(:,:,(i)) = data_temp((i_start-30:(i_start+len-1-30)),:);
         else 
             i_start = find(data_temp(:,10)==-0.15,1);
+            data(:,:,(i)) = data_temp((i_start:(i_start+len-1)),:);
         end
-        data(:,:,(i)) = data_temp((i_start-30:(i_start+len-1-30)),:);
+        
 
     end
 

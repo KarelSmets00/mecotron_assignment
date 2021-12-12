@@ -1,5 +1,5 @@
 QGPIORecord, QRC v6.1.0, 11-12-2021 @ 22:28:25, Windows 10 Version 2009, 10.0.19042, x86_64
-Time, VoltA, voltB, desired_velocity, Phat, L, vA, vB, Front Distance, xhat(0), NaN, nu(0), S(0)
+Time, VoltA, voltB, desired_velocity, P, L, vA, vB, y, x, NaN, nu, S
 21310, 0, 0, 0, 0, 0, 0, 0, 0.430751, 0, 0, 0, 0
 21321, 0, 0, 0, 0, 0, 0, 0, 0.423754, 0, 0, 0, 0
 21330, 0, 0, 0, 0, 0, 0, 0, 0.423754, 0, 0, 0, 0

@@ -13,6 +13,7 @@ files = [".\measured data\Vraag3C\R9.5199e_7\Qe_1.csv",         9.1599e-7;
          ".\measured data\Vraag3C\R9.5199e_7\Qe_3.csv",         9.1599e-7;
          ".\measured data\Vraag3C\R9.5199e_7\Qe_5.csv",         9.1599e-7;
          ".\measured data\Vraag3C\R9.5199e_7\Qe_7.csv",         9.1599e-7;
+         ".\measured data\Vraag3C\R9.5199e_7\Qe_8.csv",         9.1599e-7;
          ".\measured data\Vraag3C\R9.5199e_7\Qe_9.csv",         9.1599e-7;
          ".\measured data\Vraag3C\R9.5199e_7\Qe_11.csv",        9.1599e-7;
          ".\measured data\Vraag3C\R9.5199e_7\Q95199e_11.csv",   9.1599e-7;
@@ -23,7 +24,7 @@ files = [".\measured data\Vraag3C\R9.5199e_7\Qe_1.csv",         9.1599e-7;
 
 % -- processing --
 
-for i = 3:length(files(:,1))
+for i = 1:length(files(:,1))
     
     % clean up
     clear readdata readlabels obj

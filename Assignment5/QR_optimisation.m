@@ -1,6 +1,6 @@
 close all; clear all;
 
-[data,files,t,Ts,len] = Data_Preprocessing('.\measured data\QR_optimisation\',1800);
+[data,files,t,Ts,len] = Data_Preprocessing('.\measured data\QR_optimisation\',1000);
 
 
 [~,~,c] = size(data);

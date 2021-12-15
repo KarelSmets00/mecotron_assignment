@@ -3,9 +3,9 @@
 void PredictionUpdate(const Matrix<2> &u, Matrix<3> &xhat, Matrix<3,3> &Phat) {
    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT PredictionUpdate OF THE EXTENDED KALMAN FILTER
    // Tuning parameter
-   float arrayQ[3][3]{ { 5e-9,  0, 0},    //Provide here the element values of weight Q
-                       { 0,  5e-9, 0},
-                       { 0,  0, 5e-9}};
+   float arrayQ[3][3]{ { 5e-7,  0, 0},    //Provide here the element values of weight Q
+                       { 0,  5e-7, 0},
+                       { 0,  0, 5e-7}};
   
    Matrix<3, 3> Q = arrayQ;
   

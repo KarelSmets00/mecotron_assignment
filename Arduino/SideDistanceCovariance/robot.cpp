@@ -32,22 +32,6 @@ void Robot::control() {
     LED1(ON);
     LED2(OFF);
      
-    if (k==((T*100)-1)){
-      k=0;
-      state = !state;
-      voltageState = !voltageState;
-    }
-    if (k==0){
-      if (state){
-        setVoltageMotorA(voltageA);
-        setVoltageMotorB(0.0);
-      }
-      else{
-        setVoltageMotorA(0.0);
-        setVoltageMotorB(0.0);
-      }
-    }
-    k=k+1;
   }
   else {
     // If the controller is disabled, you might want to do something else...
@@ -57,29 +41,11 @@ void Robot::control() {
     setVoltageMotorB(0.0); // Apply 0.0 volts to motor B if the control is disabled
   }
 
-  voltageA = readValue(0);
-  N_pulses = readValue(1);
-  T = readValue(2);
   
-  float ra = getPositionMotorA(); // get the position of motor A [rad]
-  float va = getSpeedMotorA();    // Get the wheel speed of motor A [rad/s]
-  float ia = getCurrentMotorA();
-  float volta = getVoltageMotorA();
+  float FD = getSideDistance(); // get the position of motor A [rad]
+ 
   
-  float rb = getPositionMotorB();
-  float vb = getSpeedMotorB();
-  float ib = getCurrentMotorB();
-  float voltb = getVoltageMotorB();
-  
-  writeValue(0,ra);       // Send the value of variable k to QRoboticsCenter's channel 0
-  writeValue(1,va);
-  writeValue(2,voltageState);
-  writeValue(3,rb);
-  writeValue(4,vb);
-  writeValue(5,ia);
-  writeValue(6,ib);
-  writeValue(7,volta);
-  writeValue(8,voltb);
+  writeValue(0,FD);       // Send the value of variable k to QRoboticsCenter's channel 0
 }
 
 bool Robot::controlEnabled() {

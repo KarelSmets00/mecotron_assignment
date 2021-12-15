@@ -6,21 +6,12 @@ clear all; close all
 % -- INPUT FOR FILES HERE --
 export_fig = 1;
 
-confidence = 0.95;   % confidence bound
-M = 5;               % samples for SNISS
+states = [1 2 3];
+confidence = 0.95;
+
 % -- FILES --
-files = [".\measured data\Vraag3C\R9.5199e_7\Qe_1.csv",         9.1599e-7;
-         ".\measured data\Vraag3C\R9.5199e_7\Qe_3.csv",         9.1599e-7;
-         ".\measured data\Vraag3C\R9.5199e_7\Qe_5.csv",         9.1599e-7;
-         ".\measured data\Vraag3C\R9.5199e_7\Qe_7.csv",         9.1599e-7;
-         ".\measured data\Vraag3C\R9.5199e_7\Qe_8.csv",         9.1599e-7;
-         ".\measured data\Vraag3C\R9.5199e_7\Qe_9.csv",         9.1599e-7;
-         ".\measured data\Vraag3C\R9.5199e_7\Qe_11.csv",        9.1599e-7;
-         ".\measured data\Vraag3C\R9.5199e_7\Q95199e_11.csv",   9.1599e-7;
-         ".\measured data\Vraag3C\Qe_8\Re_0.csv",                       1;
-         ".\measured data\Vraag3C\Qe_8\Re_2.csv",                    1e-2;
-         ".\measured data\Vraag3C\Qe_8\Re_4.csv",                    1e-4;
-         ".\measured data\Vraag3C\Qe_8\Re_6.csv",                    1e-6];
+files = [".\measured data\Vraag2C\...",         9.1599e-7;
+         ".\measured data\Vraag2C\...",         9.1599e-7];
 
 % -- processing --
 

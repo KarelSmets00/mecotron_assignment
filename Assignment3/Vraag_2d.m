@@ -2,6 +2,11 @@ clear all
 
 vraag3c = 1             %if==1, calculations for 3c are done, otherwise calc for 2d
 
+% Q = 1e-11;
+% R = 1e-6;
+% A = 1;
+% C = -1;
+
 if ~vraag3c
     Q = 0.1;
     R = 9.5199e-7;

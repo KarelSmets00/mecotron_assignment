@@ -33,5 +33,17 @@ plot(t, stepinput);
 [~,~,c] = size(data);
 for i=1:c
     plot(t, data(:,9,i));
-    legend("step input","K = 50","K = 55","K = 60","K = 80","K = 100","K = 150","K = 200","K = 300")
 end
+xlabel("time [s]")
+ylabel("measured distance [m]")
+legend("step input","K = 50","K = 55","K = 60","K = 80","K = 100","K = 150","K = 200","K = 300")
+
+figure
+hold on
+plot(t, stepinput)
+for i=1:c
+    plot(t, data(:,2,i))
+end
+xlabel("time [s]")
+ylabel("Controle signal motor A [V]")
+legend("K = 50","K = 55","K = 60","K = 80","K = 100","K = 150","K = 200","K = 300", "Location","best")

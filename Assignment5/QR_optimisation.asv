@@ -1,0 +1,12 @@
+close all; clear all;
+
+[data,files,t,Ts,len] = Data_Preprocessing('.\measured data\QR_optimisation\',1800);
+
+
+% state 1: xc
+figure
+[~]
+hold on
+plot(t, data(:,2,1))
+hold on 
+

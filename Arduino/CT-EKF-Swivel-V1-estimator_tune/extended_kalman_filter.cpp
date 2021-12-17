@@ -3,16 +3,16 @@
 void PredictionUpdate(const Matrix<2> &u, Matrix<3> &xhat, Matrix<3,3> &Phat) {
    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT PredictionUpdate OF THE EXTENDED KALMAN FILTER
    // Tuning parameter
-   float arrayQ[3][3]{ { 2e-7,  0, 0},    //Provide here the element values of weight Q
-                       { 0,  2e-7, 0},
-                       { 0,  0, 2e-7}};
+   float arrayQ[3][3]{ { 1e-5,  0, 0},    //Provide here the element values of weight Q
+                       { 0,  1e-5, 0},
+                       { 0,  0, 2e-3}};
   
    Matrix<3, 3> Q = arrayQ;
   
    // Compute Jacobian of system dynamics
-   float arrayJf[3][3]{{0, 0, -sin(xhat(2,0))*u(0,0)},   //Provide here the element values of the Jacobian of system dynamics
-                       {0, 0, cos(xhat(2,0))*u(0,0)},
-                       {0, 0, 0}};
+   float arrayJf[3][3]{{1, 0, -TSAMPLE*sin(xhat(2,0))*u(0,0)},   //Provide here the element values of the Jacobian of system dynamics
+                       {0, 1, TSAMPLE*cos(xhat(2,0))*u(0,0)},
+                       {0, 0, 1}};
    Matrix<3, 3> A = arrayJf;
   
    // Evaluate discrete-time nonlinear system dynamics

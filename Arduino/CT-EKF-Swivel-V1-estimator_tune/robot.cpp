@@ -41,72 +41,72 @@ void Robot::control() {
     }
 
     // // Useful outputs to QRC for assignment questions
-//     writeValue(0, _xhat(0));
-//     writeValue(1, _xhat(1));
-//     writeValue(2, _xhat(2));
-//     writeValue(3, _Phat(0,0));
-//     writeValue(4, _Phat(1,0));
-//     writeValue(5, _Phat(1,1));
-//     writeValue(6, _Phat(2,0));
-//     writeValue(7, _Phat(2,1));
-//     writeValue(8, _Phat(2,2));
+     writeValue(0, _xhat(0));
+     writeValue(1, _xhat(1));
+     writeValue(2, _xhat(2));
+     writeValue(3, _Phat(0,0));
+     writeValue(4, _Phat(1,0));
+     writeValue(5, _Phat(1,1));
+     writeValue(6, _Phat(2,0));
+     writeValue(7, _Phat(2,1));
+     writeValue(8, _Phat(2,2));
   }
 
   if(controlEnabled()) {   // only do this if controller is enabled (triggered by pushing 'Button 0' in QRoboticsCenter)
 
-//    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT THE FEEDFORWARD INPUTS (ASSIGNMENT 5.2, no state feedback here)
-//    // COMMENT OR REMOVE LINES BELOW ONCE YOU IMPLEMENT THE POSITION STATE FEEDBACK CONTROLLER
-//    // Compute feedforward uff = [v w]
-//    // The feedforward are here returned by the built-in trajectory: trajectory.v() and trajectory.omega()
-//    uff(0) = trajectory.v();          //desired forward velocity of the cart (in m/s)
-//    uff(1) = trajectory.omega();      //desired rotational velocity of the cart (in rad/s)
-//    // The trajectory must be started by pushing 'Button 2' in QRoboticsCenter, otherwise will return zeros
-//    // after any experiment the trajectory must be reset pushing 'Button 3' in QRoboticsCenter
-//    //
-//    // Desired velocity of the cart just feedforward in this case
-//    desiredVelocityCart = uff;  // desired forward and rotational velocity of the cart from the feedforward and state feedback controller
-//    //
-//    // // apply the static transformation between velocity of the cart and velocity of the motors
-//     desiredVelocityMotorA = (desiredVelocityCart(0)-desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;;  // calculate the angular velocity of the motor A using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
-//     desiredVelocityMotorB = (desiredVelocityCart(0)+desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;  // calculate the angular velocity of the motor B using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
-
-
-
-     // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT POSITION CONTROLLER (ASSIGNMENT 5.3)
-     // The reference is here given by built-in trajectory: trajectory.X(), trajectory.Y(), trajectory.Theta()
-     xref(0)=trajectory.X();        // desired X cart position [m]
-     xref(1)=trajectory.Y();        // desired Y cart position [m]
-     xref(2)=trajectory.Theta();    // desired cart angle [rad]
-    
-     // Controller tuning
-     float arrayKfb[2][3]{{7, 0, 0},  // state feedback gain K, to design
-                          {0, 5, 30}};
-     Matrix<2, 3> Kfb = arrayKfb;
-    
-     // Compute control action
-     // Firstly, compute error in world-frame ew = xref - x
-     Matrix<3> ew = xref - _xhat;
-    
-     /// Secondly, compute rotation matrix
-     float arrayRw2c[3][3]{{cos(_xhat(2,0)),    sin(_xhat(2,0)),    0},
-                           {-sin(_xhat(2,0)),   cos(_xhat(2,0)),    0},
-                           {0,                  0,                  1}};
-    
-     Matrix<3, 3> Rw2c = arrayRw2c;
-     /// Thirdly, rotate error to cart-frame ec = Rw2c*ew
-     Matrix<3> ec = Rw2c * ew;
-     /// Fourthly, compute feedback ufb = Kfb*ec
-     Matrix<2> ufb = Kfb * ec;
-     /// Fifthly, compute feedforward uff = [v w]
-     uff(0) = trajectory.v();
-     uff(1) = trajectory.omega();
-     // Sixtly, compute the control action u = uff + ufb
-     // desiredVelocityCart = uff + ufb;  // desired forward and rotational velocity of the cart from the feedforward and state feedback controller
-     
-     desiredVelocityCart = ufb;  // desired forward and rotational velocity of the cart from the feedforward and state feedback controller
-
+    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT THE FEEDFORWARD INPUTS (ASSIGNMENT 5.2, no state feedback here)
+    // COMMENT OR REMOVE LINES BELOW ONCE YOU IMPLEMENT THE POSITION STATE FEEDBACK CONTROLLER
+    // Compute feedforward uff = [v w]
+    // The feedforward are here returned by the built-in trajectory: trajectory.v() and trajectory.omega()
+    uff(0) = trajectory.v();          //desired forward velocity of the cart (in m/s)
+    uff(1) = trajectory.omega();      //desired rotational velocity of the cart (in rad/s)
+    // The trajectory must be started by pushing 'Button 2' in QRoboticsCenter, otherwise will return zeros
+    // after any experiment the trajectory must be reset pushing 'Button 3' in QRoboticsCenter
+    //
+    // Desired velocity of the cart just feedforward in this case
+    desiredVelocityCart = uff;  // desired forward and rotational velocity of the cart from the feedforward and state feedback controller
+    //
+    // // apply the static transformation between velocity of the cart and velocity of the motors
      desiredVelocityMotorA = (desiredVelocityCart(0)-desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;;  // calculate the angular velocity of the motor A using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
      desiredVelocityMotorB = (desiredVelocityCart(0)+desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;  // calculate the angular velocity of the motor B using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
+
+
+
+//     // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT POSITION CONTROLLER (ASSIGNMENT 5.3)
+//     // The reference is here given by built-in trajectory: trajectory.X(), trajectory.Y(), trajectory.Theta()
+//     xref(0)=trajectory.X();        // desired X cart position [m]
+//     xref(1)=trajectory.Y();        // desired Y cart position [m]
+//     xref(2)=trajectory.Theta();    // desired cart angle [rad]
+//    
+//     // Controller tuning
+//     float arrayKfb[2][3]{{7, 0, 0},  // state feedback gain K, to design
+//                          {0, 5, 30}};
+//     Matrix<2, 3> Kfb = arrayKfb;
+//    
+//     // Compute control action
+//     // Firstly, compute error in world-frame ew = xref - x
+//     Matrix<3> ew = xref - _xhat;
+//    
+//     /// Secondly, compute rotation matrix
+//     float arrayRw2c[3][3]{{cos(_xhat(2,0)),    sin(_xhat(2,0)),    0},
+//                           {-sin(_xhat(2,0)),   cos(_xhat(2,0)),    0},
+//                           {0,                  0,                  1}};
+//    
+//     Matrix<3, 3> Rw2c = arrayRw2c;
+//     /// Thirdly, rotate error to cart-frame ec = Rw2c*ew
+//     Matrix<3> ec = Rw2c * ew;
+//     /// Fourthly, compute feedback ufb = Kfb*ec
+//     Matrix<2> ufb = Kfb * ec;
+//     /// Fifthly, compute feedforward uff = [v w]
+//     uff(0) = trajectory.v();
+//     uff(1) = trajectory.omega();
+//     // Sixtly, compute the control action u = uff + ufb
+//     // desiredVelocityCart = uff + ufb;  // desired forward and rotational velocity of the cart from the feedforward and state feedback controller
+//     
+//     desiredVelocityCart = ufb;  // desired forward and rotational velocity of the cart from the feedforward and state feedback controller
+//
+//     desiredVelocityMotorA = (desiredVelocityCart(0)-desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;;  // calculate the angular velocity of the motor A using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
+//     desiredVelocityMotorB = (desiredVelocityCart(0)+desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;  // calculate the angular velocity of the motor B using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
 
       
     // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT VELOCITY CONTROLLER
@@ -139,20 +139,22 @@ void Robot::control() {
     setVoltageMotorA(volt_A);
     setVoltageMotorB(volt_B);
     
-    writeValue(0, _xhat(0,0));
-    writeValue(1, _xhat(1,0));
-    writeValue(2, _xhat(2,0));
-    writeValue(3, trajectory.X());
-    writeValue(4, trajectory.Y());
-    writeValue(5, trajectory.Theta());
-//    writeValue(6, ew(0));
-//    writeValue(7, ew(1));
-//    writeValue(8, ew(2));
-    writeValue(6, _L(2,0));
-    writeValue(7, _L(2,1));
-
-    writeValue(9,desiredVelocityCart(0));
-    writeValue(10,desiredVelocityCart(1));
+//    writeValue(0, _xhat(0,0));
+//    writeValue(1, _xhat(1,0));
+//    writeValue(2, _xhat(2,0));
+//    writeValue(3, trajectory.X());
+//    writeValue(4, trajectory.Y());
+//    writeValue(5, trajectory.Theta());
+////    writeValue(6, ew(0));
+////    writeValue(7, ew(1));
+////    writeValue(8, ew(2));
+//    writeValue(6, _L(2,0));
+//    writeValue(7, _L(2,1));
+//    writeValue(8, _nu(1));
+//    
+//    writeValue(9,desiredVelocityCart(0));
+//    writeValue(10,desiredVelocityCart(1));
+//    writeValue(11, cos(1.57));
   }
   else                      // do nothing since control is disables
   {

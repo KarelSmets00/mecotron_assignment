@@ -28,6 +28,9 @@ void PredictionUpdate(const Matrix<2> &u, Matrix<3> &xhat, Matrix<3,3> &Phat) {
 void CorrectionUpdate(const Matrix<2> &y, Matrix<3> &xhat, Matrix<3,3> &Phat, Matrix<2> &nu, Matrix<2,2> &S) {
    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT CorrectionUpdate OF THE EXTENDED KALMAN FILTER
    // Define useful constant
+   const float x_offset = 0.02;
+   const float y_offset = 0.04;
+   
    const float alpha = 0.09 ;  // longitudinal distance from frontal IR sensor to front wheel wheel axle
    const float beta = 0.07 ;   // longitudinal distance from lateral IR sensor to front wheel axle
    const float gamma = 0.075 ;  // lateral distance from lateral IR sensor to middle of front wheel axle
@@ -47,8 +50,8 @@ void CorrectionUpdate(const Matrix<2> &y, Matrix<3> &xhat, Matrix<3,3> &Phat, Ma
   
    // Evaluate measurement equation
 
-   float arrayh[2][1]{{ -(xhat(0,0)/cos(xhat(2,0))) - alpha },
-                      { -(xhat(1,0)/cos(xhat(2,0))) - gamma }};
+   float arrayh[2][1]{{ -(xhat(0,0)/cos(xhat(2,0))) - (alpha-y_offset) },
+                      { -(xhat(1,0)/cos(xhat(2,0))) - (gamma-x_offset) }};
    Matrix<2> h = arrayh;
   
    // Compute innovation

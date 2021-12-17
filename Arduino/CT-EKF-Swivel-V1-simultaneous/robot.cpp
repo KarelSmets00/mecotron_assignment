@@ -28,7 +28,7 @@ void Robot::control() {
   Matrix<2> measurements;
 
   // Kalman filtering
-  if(KalmanFilterEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
+  if(controlEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
 
     // Correction step
     // perform the correction step if measurement from the sensor are meaningful
@@ -79,8 +79,8 @@ void Robot::control() {
      xref(2)=trajectory.Theta();    // desired cart angle [rad]
     
      // Controller tuning
-     float arrayKfb[2][3]{{2, 0, 0},  // state feedback gain K, to design
-                          {0, 2, 5}};
+     float arrayKfb[2][3]{{7, 0, 0},  // state feedback gain K, to design
+                          {0, 2, 30}};
      Matrix<2, 3> Kfb = arrayKfb;
     
      // Compute control action
@@ -108,6 +108,7 @@ void Robot::control() {
      desiredVelocityMotorA = (desiredVelocityCart(0)-desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;;  // calculate the angular velocity of the motor A using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
      desiredVelocityMotorB = (desiredVelocityCart(0)+desiredVelocityCart(1)*WHEELBASE/2) / R_WHEEL;  // calculate the angular velocity of the motor B using desiredVelocityCart(0) (cart forward velocity) and desiredVelocityCart(0) (cart rotational velocity)
 
+      
     // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT VELOCITY CONTROLLER
      // Read the motor positions
     float yA = getSpeedMotorA();  //  read the encoder of motor A (in radians)
@@ -147,7 +148,9 @@ void Robot::control() {
     writeValue(6, ew(0));
     writeValue(7, ew(1));
     writeValue(8, ew(2));
-    
+
+    writeValue(9,desiredVelocityCart(0));
+    writeValue(10,desiredVelocityCart(1));
   }
   else                      // do nothing since control is disables
   {
@@ -158,7 +161,7 @@ void Robot::control() {
   }
 
   // Kalman filtering
-  if(KalmanFilterEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
+  if(controlEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
     // Prediction step
     PredictionUpdate(desiredVelocityCart, _xhat, _Phat);                        // do the prediction step -> update _xhat and _Phat
   }
@@ -218,9 +221,13 @@ bool Robot::KalmanFilterEnabled() {
 void Robot::button0callback() {
   if(toggleButton(0)) {           // Switches the state of button 0 and checks if the new state is true
     resetController();
-    message("Controller resed and enabled.");    // Display a message in the status bar of QRoboticsCenter
+    resetKalmanFilter();            // Reset the Kalman filter
+    trajectory.start();
+    writeValue(0, _xhat(0,0));
+    message("Controller reset and enabled.");    // Display a message in the status bar of QRoboticsCenter
   }
   else {
+    trajectory.stop();
     message("Control disabled.");
   }
 }

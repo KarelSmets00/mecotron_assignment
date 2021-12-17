@@ -10,9 +10,10 @@ states = [1 2 3];
 confidence = 0.95;
 
 % -- FILES --
-files = [".\measured data\QR_optimisation\Q1e-6.csv"
-         ".\measured data\QR_optimisation\Q5e-7.csv"
-         ".\measured data\QR_optimisation\Q5e-9.csv"];
+% files = [".\measured data\QR_optimisation\Q1e-6.csv"
+%         ".\measured data\QR_optimisation\Q5e-7.csv"
+%         ".\measured data\QR_optimisation\Q5e-9.csv"];
+files =".\measured data\Confidence intervals\P0.01_0.01_0.12_Q2.csv"
 
 R = [1e-6 0
      0    1e-6];

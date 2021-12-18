@@ -1,6 +1,6 @@
 close all; clear all;
 
-[data_temp,files,t,Ts,len] = Data_Preprocessing('.\measured data\K_tuning\',400,1); 
+[data_temp,files,t,Ts,len] = Data_Preprocessing('.\measured data\K_tuning\',400,'vraagb'); 
 
 % t = data(:,1);                  
 % VoltA = data(:,2);             

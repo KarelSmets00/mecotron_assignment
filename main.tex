@@ -23,6 +23,7 @@
 \usepackage{textcomp}
 \usepackage{float}
 
+
 \def\mydate{December 2021}
 
 % Paginamarges
@@ -82,14 +83,14 @@ bottom=30mm
 \section{Assignment 1: motor identification}
 
 \subsection{Model structure}
-
+\subsubsection{Discrete model structure}
 % state first discrete tf representation
 % elaborate on how it comes to be
 % = state physical laws and discuss
 
 A third order model (denominator order three) with a second order numerator is used to represent the behaviour of the DC motor. The general format of this model is shown below:
 \begin{equation}
-    G(z)=\frac{d_{3} z+d_{4}}{z^{3}+d_{1} z^{2}+d_{2} z}
+    G(z)=\frac{b_{0} z+b_{1}}{a_0 z^{3}+a_{1} z^{2}+a_{2} z}
     \label{eq:model}
 \end{equation}
 This representation is based upon a combined mechanical and electrical representation of the  of the motor. The electrical behaviour is moddeled as follows:
@@ -125,7 +126,7 @@ The electrical and mechanical representations are coupled through the torque-cur
 \end{center}
 
 \newpar
-The result is an second order continuous time transfer function which relates the rotor speed to the terminal voltage. The denominator has to real poles, caused by the inertial time constant and the one caused by the rotor coil inductance. The electrical delay is smaller than the mechanical one and can be omitted. Though, this is not done because leaving it in gives an noticeable improvement in the model behaviour as will be seen later.
+The result is a second order continuous time transfer function which relates the rotor speed to the terminal voltage. The denominator has to real poles, caused by the inertial time constant and the one caused by the rotor coil inductance. The electrical delay is smaller than the mechanical one and can be omitted. Though, this is not done because leaving it in gives an noticeable improvement in the model behaviour as will be seen later.
 
 \newpar
 The discretization of this transfer function is done using the ZOH-method. Due to cancellations in the numerator and denominator upon multiplication of the ZOH factor \((1-z^{-1})\) with the discrete representation, the discrete motor model is of order two with two zeros. During the identification proces, the second zero turned out to be always negligible. Therefor the number of zeros in the model was reduced to one. 
@@ -139,7 +140,7 @@ The above procedure is graphically represented in \autoref{fig:modelphysics}
 
 % include torque disturbance model?? --> part of ARX no?
 
-\newpar
+\subsubsection{Inputs, outputs, and their units}
 The input of the model is the motor terminal voltage \(V(s)\) expressed in \([V]\) (volt). The output is the angular velocity of the rotor \(\omega(s)\) in \([rad/s^2]\).
 
 \subsection{Identification of motor-wheel system} \label{motor-wheel}
@@ -149,7 +150,7 @@ While identifying the system, it is important to make sure the excitation signal
 
   \begin{figure}[H]
       \makebox[\textwidth][c]{\includegraphics[width=0.5\textwidth]
-      {figs/Q2/excitationSignal6V.png}}
+      {figs/assign1/Q2/excitationSignal6V.png}}
       \caption{Excitation signal step input of 6V}
       \label{fig:excitationSignal6V}
   \end{figure}
@@ -158,10 +159,10 @@ While identifying the system, it is important to make sure the excitation signal
 The block-pulse as input is repeated 5 times in time. This allows us to to average out the response of the system, in order to minimize the influence of noise and other disturbances. On top of that, different voltages are fed into the system. We chose for 3V, 6V, 9V and 12V to have a broad coverage of the voltage range. This will allow us later on to check the linearity of our system. 
 
 \subsubsection{Obtaining system parameters}
-To obtain the system parameters, we first have a look at difference equation following from the proposed model in \autoref{eq:difference equation}. Note that the internal delay in MicroOS is also visible here, because $y[k]$ is independent of $u[k]$. Its dependency starts at $u[k-1]$
+To obtain the system parameters, we first have a look at difference equation following from the proposed model (\autoref{eq:model}) in \autoref{eq:difference equation}. Note that the internal delay in MicroOS is also visible here, because \(\omega[k]\) is independent of \(u[k]\). Its dependency starts at \(u[k-1]\).
 
 \begin{equation}
-    v[k] + a_2 v[k-1] + a_1 v[k-2] = b_2 u[k-1] + b_1 u[k-2] + b_0 u[k-3]
+    \omega[k] + a_2 \omega[k-1] + a_1 \omega[k-2] = b_2 u[k-1] + b_1 u[k-2] + b_0 u[k-3]
     \label{eq:difference equation}
 \end{equation}
 
@@ -172,17 +173,17 @@ Error criterion that this expression minimizes??
 In \autoref{tab:location_Sys_31z} the location and accompanying frequency of the different poles and zeros are displayed.
 
 \begin{center}
-    \begin{tabular}{ |c|c|c|c|}
+    \begin{tabular}{ |c|c|c|c|c|}
     \hline
-    Zero/Pole & Location & Frequency{[}rad/s{]} & Frequency{[}Hz{]}  \\
+    Zero/Pole & Location & \omega_n{[}rad/s{]} & \omega_n{[}Hz{]} & \zeta  \\
     \hline
-    z1        & -0.816    & 315                 &  50.13           \\
+    z1        & -0.816    & 315      &  50.13   & 0.0647           \\
     \hline
-    p1        & 0         & /                   & /                \\
+    p1        & 0         & /        & /        & /               \\
     \hline
-    p2        & -0.243    & 344                 & 54.75            \\
+    p2        & -0.243    & 344      & 54.75    & 0.41             \\
     \hline
-    p3        & 0.514     & 66.6                 & 10.60           \\ 
+    p3        & 0.514     & 66.6     & 10.60    & 1       \\ 
     \hline
     \end{tabular}  
     \captionof{table}{location and frequency of poles and zeros in the fitted system}
@@ -196,32 +197,32 @@ While measuring the response of the system to the excitation signal, we should k
 Another reason to filter the measured date, is due to the fact that the least-squares estimate method has an intrinsic high-pass character. This means that the identification method gives more 'weight' to the high frequency errors than the errors at lower frequency. However, most of the noise is situated at high frequencies. For this reason, it is advisable to filter the data with a low-pass filter to compensate this high-pass characteristic of the estimation method. It is important that both the output and input data are sent through the same filter, to make sure that the relation between the filtered signals does not change. 
 
 \newpar
-As mentioned before, we want to suppress the high pass character of the estimation method. This means that the filter should have at least the same order as the model being proposed during estimation. If we want to further suppress the high frequency measurement noise, the order of the filters should be higher than the order of the model. We chose to use an butterworth filter of order 4 and cutoff frequency of $70\pi rad/s$ as these gave the best results, minimizing the errors of the model compared to the measurements. 
+As mentioned before, we want to suppress the high pass character of the estimation method. This means that the filter should have at least the same order as the model being proposed during estimation. If it is desired to further suppress the high frequency measurement noise, the order of the filters should be higher than the order of the model. We chose to use a butterworth filter of order 4 and cutoff frequency of $70\pi rad/s$ as these gave the best results, minimizing the errors of the model compared to the measurements. 
 
 \newpar
 The result of the model estimation after filtering using the same amount of poles and zero's is displayed in \autoref{tab:location_Sys_31z_f}. It is clear that the location of the poles and zeros have shifted a bit. This is also visualised in the pole-zero maps of the identified model with and  without filter in \autoref{fig:pzmap}.
 
 \begin{center}
-    \begin{tabular}{ |c|c|c|c|}
+    \begin{tabular}{ |c|c|c|c|c|}
     \hline
-    Zero/Pole & Location & Frequency{[}rad/s{]} & Frequency{[}Hz{]}  \\
+    Zero/Pole & Location & \omega_n{[}rad/s{]} & \omega_n{[}Hz{]} & \zeta  \\
     \hline
-    z1        & -0.632    & 317                 &  50.45           \\
+    z1        & -0.632    & 317                 &  50.45    & 0.145         \\
     \hline
-    p1        & 0         & /                   & /                 \\
+    p1        & 0         & /                   & /         & /          \\
     \hline
-    p2        & -0.0375   & 454                 & 72,26            \\
+    p2        & -0.0375   & 454                 & 72,26     & 0.723         \\
     \hline
-    p3        & 0.482     & 73                  & 11,62           \\ 
+    p3        & 0.482     & 73                  & 11,62     & 0.482        \\ 
     \hline
     \end{tabular}  
-    \captionof{table}{location and frequency of poles and zeros in the fitted system}
+    \captionof{table}{location and frequency of poles and zeros in the fitted system after filtering}
     \label{tab:location_Sys_31z_f}
 \end{center}
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]
-    {figs/Q2/motor/pzmap}}
+    {figs/assign1/Q2/motor/pzmap}}
     \caption{Pole-zero map of identified model with(right) and without(left) filtering}
     \label{fig:pzmap}
 \end{figure}
@@ -234,14 +235,14 @@ As you can see, the difference between the filtered model and unfiltered is rath
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q2/motor/StepResponse}}
+    {figs/assign1/Q2/motor/StepResponse}}
     \caption{measured and simulated responses}
     \label{fig:StepResponse}
 \end{figure}
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q2/motor/error}}
+    {figs/assign1/Q2/motor/error}}
     \caption{error between measured and simulated responses}
     \label{fig:StepResponseError}
 \end{figure}
@@ -264,7 +265,14 @@ If H(s) is a linear system, it must satisfy:
 \end{equation}
 
 \newpar
-We can use the equation above to check if the cart is indeed linear, as assumed by approximating it by a linear model. As the conditions says, the sum of the responses should be the same as the response to the sum of the inputs.  This is visualised in \autoref{}. For example: we can compare the response of a 12V input with twice the response of a 6V input, or 4 times the response of a 3V input. As you can see, the responses don't coincide as it should be the case in a perfectly linear system. These nonlinearities in our system are a result of a couple aspects, e.g. eddy currents, hysteresis losses, frictional aspects and cogging torque. (cogging torque in a permanent magnet motor is due to the interaction between permanent magnets in the stator and the slot in the rotor)
+We can use the equation above to check if the cart is indeed linear, as assumed by approximating it by a linear model. As the conditions says, the sum of the responses should be the same as the response to the sum of the inputs.  This is visualised in \autoref{fig:linearityCheck}. For example: we can compare the response of a 12V input with twice the response of a 6V input, or 4 times the response of a 3V input. As you can see, the responses don't coincide as it should be the case in a perfectly linear system. These nonlinearities in our system are a result of a couple aspects, e.g. eddy currents, hysteresis losses, frictional aspects and cogging torque. (cogging torque in a permanent magnet motor is due to the interaction between permanent magnets in the stator and the slot in the rotor)
+
+\begin{figure}[H]
+    \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]
+    {figs/assign1/Q2/motor/linearityCheck.png}}
+    \caption{Checking the superposition principle}
+    \label{fig:linearityCheck}
+\end{figure}
 
 \newpar
 However, the violations on the linearity principle are rather small. Approximating the system by a linear estimation is still a valid, and will give us sufficiently good results. 
@@ -275,26 +283,29 @@ The cart is placed onto the ground and step responses are measured an in section
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q3/3a_motor_A.png}}
+    {figs/assign1/Q3/3a_motor_A.png}}
     \caption{left: Comparison of motor A response when on ground to the simulated response using the model motor-wheel system. right: enlargement of first part of transient.}
     \label{fig:loadunloadcompA}
 \end{figure}
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q3/3a_motor_B.png}}
+    {figs/assign1/Q3/3a_motor_B.png}}
     \caption{left: Comparison of motor B response when on ground to the simulated response using the model motor-wheel system. right: enlargement of first part of transient.}
     \label{fig:loadunloadcompB}
 \end{figure}
 
 \newpar
-The plots on the right show that the angular velocity is rising slower. This is to be expected because the inertia of the system has increased now that the cart itself is also moving. The impact on the steady state is negligible, because at constant speed the system inertia does not matter anymore (zero acceleration). In the measurement there is clearly a dip at the top of the rising edge. This dip is always present, becomes more extended in time for larger input step voltages and starts at approximately at the same time after the motor voltage is applied. This is shown in \autoref{fig:_mean_v}. Because the duration of the dip depends on the input voltage, it is non linear in nature an can not be incorporated in the linear model. The origin of these dips in not completely clear, but due to their voltage dependence the origin is probably to be found in some kind of electromagnetic effect, like field distortion.
+The plots on the right show that the angular velocity is rising slower. This is to be expected because the inertia of the system has increased now that the cart itself is also moving. The impact on the steady state is negligible, because at constant speed the system inertia does not matter anymore (zero acceleration). In the measurement there is clearly a dip at the top of the rising edge. This dip is always present, becomes more extended in time for larger input step voltages and starts at approximately at the same time after the motor voltage is applied. This is shown in \autoref{fig:_mean_v}. Because the duration of the dip depends on the input voltage, it is non linear in nature an can not be incorporated in the linear model.
+
+\newpar
+The origin of these dips is probably slip. The larger the applied step, the higher the acceleration, causing the slip to continue longer. During slip the motor is loaded more due to the frictional force between the tire and ground. This explains the velocity increase when the slipping stops.
 
 % te lange text, nuance meer verleggen naar dat de dip slecht word gevolgd door het motor-wiel model mits die er eerst niet was en het dus beter kan.
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q3/dips.png}}
+    {figs/assign1/Q3/dips.png}}
     \caption{Motor angular speed caused by 3,6,9 and 12V step input (averaged over 5 measurements). The almoast linear increase in duration with the voltage is clearly visable.}
     \label{fig:_mean_v}
 \end{figure}
@@ -303,30 +314,47 @@ The plots on the right show that the angular velocity is rising slower. This is 
 The reidentified model parametres are:
 
 \begin{center}
-    \begin{tabular}{ |c|c|c|c|}
+    \begin{tabular}{ |c|c|c|c|c|}
     \hline
-    \multicolumn{4}{|c|}{motor A} \\
+    \multicolumn{5}{|c|}{motor A} \\
     \hline
-     d1 & d2 & d3 & d4 \\
+     $a_0$ & $a_$ & $a_2$ & $b_0$ & $b_1$ \\
     \hline
-    -1.375 & 0.4417 & 0.6903 & -0.5566 \\
+    1 & -1.375 & 0.4417 & 0.6903 & -0.5566 \\
     \hline
-    \multicolumn{4}{|c|}{motor B} \\
+    \multicolumn{5}{|c|}{motor B} \\
     \hline
-     d1 & d2 & d3 & d4 \\
+     $a_0$ & $a_$ & $a_2$ & $b_0$ & $b_1$  \\
     \hline
-    -1.383 & 0.4548 & 0.6819 & -0.5404 \\
+    1 & -1.383 & 0.4548 & 0.6819 & -0.5404 \\
     \hline
     \end{tabular}  
     \captionof{table}{Estimated parameters for motor-wheel-cart model, based upon 6V step response measurements.}
     \label{tab:location_Sys_31z_f}
 \end{center}
 
-\newpar
-HIER NOG VERGELIJKEN MET PARAMETRES VAN MOTOR-WHEEL, maar die ontbreken nog
+\begin{center}
+    \begin{tabular}{ |c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{motor A} \\
+    \hline
+     $a_0$ & $a_$ & $a_2$ & $b_0$ & $b_1$ \\
+    \hline
+    1 & -0.444 & -0.01805 & 0.6804 & 0.43 \\
+    \hline
+    \multicolumn{5}{|c|}{motor B} \\
+    \hline
+     $a_0$ & $a_$ & $a_2$ & $b_0$ & $b_1$  \\
+    \hline
+    1 & -0.4466 & 0.009759 & 0.6595 & 0.4238 \\
+    \hline
+    \end{tabular}  
+    \captionof{table}{Estimated parameters for motor-wheel model, based upon 6V step response measurements.}
+    \label{tab:location_Sys_31z_f}
+\end{center}
 
 \newpar
-The location of the discrete poles and zeros are:
+The corresponding locations of the discrete poles and zeros are:
 
 \begin{center}
     \begin{tabular}{ |c|c|c|c|}
@@ -364,14 +392,19 @@ The location of the discrete poles and zeros are:
 \newpar 
 The poles have become slower compared to those of the motor-wheel model. The system dynamics have thus become slower. This is in line with the expectations. As said before, the inertia of the system has increased due to the mass of the cart that now has to be moved to. The larger inertia makes the system respond slower.
 
-For completeness, the simulated step response using the new models is compared to the measurements in \autoref{fig:cartmodelvaidation}. Comparing this to the results for motor A and B in \autoref{fig:loadunloadcompA} and \autoref{fig:loadunloadcompB}, the new model is now much better following the transient.
+\newpar
+For completeness, the simulated step response using the new models is compared to the measurements in \autoref{fig:cartmodelvalidation}. Comparing this to the results for motor A and B in \autoref{fig:loadunloadcompA} and \autoref{fig:loadunloadcompB}, the new model is now much better following the transient.
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q3/cart_identification_validation.png}}
+    {figs/assign1/Q3/cart_identification_validation.png}}
     \caption{Motor A and B angular speed step response (6V step) next to simulated responses.}
     \label{fig:cartmodelvalidation}
 \end{figure}
+
+% ------------------------------------------------------------------
+% -- assignment 2 --
+% ------------------------------------------------------------------
 
 \section{Assignment 2: velocity control of the cart}
 
@@ -797,6 +830,52 @@ The control signal of motor A during these experiments are shown in \autoref{fig
 
 
 \subsubsection{Influence of Q and R on the evolution of \(\hat{P}_{k|k}\) and \(L_{k}\)}
+To analyse the influence of Q and R on \(\hat{P}_{k|k}\) and \(L_{k}\), the cart is positioned at a distance of 30cm. When the controller and estimator are enabled, the reference distance is set to 15 cm. Two sets of measurements were made. The first one keeps R at a constant value of \(R=9.5199m^2\), varying Q between 1e-1 and 1e-11\(m^2\). The results are visualised in the upper half of \autoref{fig:vraag3.3.c_PL}. The second set shows data for Q constant and equal to 1e-8\(m^2\), with R varying from 1 to 1e-6\(m^2\) . Results are plotted in the lower half of \autoref{fig:vraag3.3.c_PL}.
+
+\begin{figure}[H]
+\begin{adjustwidth}{-3cm}{-3cm}
+\centering
+\begin{tabular}{cc}
+  \includegraphics[width=80mm]{figs/assign3/Q3/vraag3.3.c_RP.png} &   \includegraphics[width=80mm]{figs/assign3/Q3/vraag3.3.c_RL.png} \\
+  
+  \includegraphics[width=80mm]{figs/assign3/Q3/vraag3.3.c_QP.png} & \includegraphics[width=80mm]{figs/assign3/Q3/vraag3.3.c_QL.png} \\
+\end{tabular}
+\end{adjustwidth}
+\captionof{figure}{The evolution of \(\hat{P}_{k|k}\) and \(L_{k}\) for different values of Q and R}
+\label{fig:vraag3.3.c_PL}
+\end{figure}
+
+\newpar
+These results are in line with the answers given in question 2(e) and 2(d). In 2(e) the remark was made that an estimator with a large Q/R ratio is faster than one with a low Q/R ratio. The same can be noticed in \autoref{fig:vraag3.3.c_PL}. Both \(\hat{P}_{k|k}\) and \(L_{k}\) reach their constant value sooner when Q/R is large. 
+
+\newpar
+The results are also consistent with the answers given in 2(d).
+In \autoref{} a few values of \(L_\infty\) are listed for some of the Q and R values used in the experiments. The third column shows the value when calculated with the expression obtained in 2(d). The fourth column lists the values of L after it has stabilised in the experiments. It is clear these correspond to each other as they are almost always exactly the same.
+
+\begin{center}
+    \begin{tabular}{ |c|c|c|c|}
+    \hline
+    R [\(m^2\)] & Q [\(m^2\)] & \(L_\infty\) calculated [-] & \(L_\infty\) measured [-]  \\
+    \hline
+    9.5199e-7        & 1e-1     & -0.99999      &   -0.99999           \\
+    \hline
+    9.5199e-7        & 1e-3     & -0.99904      &  -0.99905                 \\
+    \hline
+    9.5199e-7        & 1e-5     & -0.91950      &  -0.91950            \\
+    \hline
+    9.5199e-7        & 1e-7     & -0.27581      & -0.27581           \\ 
+    \hline
+    9.5199e-7        & 1e-8     & -0.09737      & -0.09737           \\ 
+    \hline
+    9.5199e-7        & 1e-9     & -0.03188      & -0.03188           \\ 
+    \hline
+    9.5199e-7        & 1e-11    & -0.00323      & -0.00376           \\ 
+    \hline
+    \end{tabular}  
+    \captionof{table}{location and frequency of poles and zeros in the fitted system}
+    \label{tab:location_Sys_31z_f}
+\end{center}
+
 
 \subsubsection{Kalman filter consistency: NIS and SNIS}
 
@@ -819,7 +898,24 @@ with \(y\) the measured distance and \(u\) the desired velocity. The state estim
 The SNIS can be calculated out of the calculated NIS values as illustrated in \autoref{eq:snis}. In this section M is chosen to be 5.
 
 \newpar
-The resulting NIS and SNIS are plotted below in \autoref{fig:QcteR} and \autoref{fig:cteQR}. \autoref{fig:QcteR} shows the results for a constant R of $9.52e-7$ and different values of Q, going from a to large Q to a to small Q. The overall best result is there found for Q = 1e-8, but in none of the cases the Kalman filter is consistent. \autoref{fig:cteQR} shows the results for a constant Q of 1e-8 and different values of R. Here to the overall best result is found for $R = 1e-6 \approx 9.52e-7$. The distribution of the NIS and SNIS point for these Q and R is the most randomly spread, which is desirable and can be seen in \autoref{fig:zoomconsistent}.
+The expected probability density of the NIS is $\chi^2$. In the numerator of equation \autoref{eq:nis} three gaussian random variables, namely $y$, $\hat{x}$ and $u=f(\hat{x})$ (due to feedback). The sum of these random variables, which is also a gaussian distribution, is then squared, resulting in a $\chi^2$ distribution.
+
+\newpar
+The SNIS is a $\chi^2$ distribution of degree M (degree 5 in this section). This is the result of the summation of M $\chi^2$ distributed NIS values to obtain the SNIS.
+
+\newpar
+The consistency is checked using confidence intervals. The confidence bounds $\alpha_{1}$ and $\alpha_{2}$ for e.g. an $95\%$ confidence interval are determined as:
+
+\begin{center}
+    \begin{tabular}{ccc}
+        \(0.025 = F_{\chi^2_{M}}(\alpha_{1})\) &   and    & \(0.975 = F_{\chi^2_{M}}(\alpha_{2})\)
+    \end{tabular}
+\end{center}
+
+\newpar
+With \(F_{\chi^2_{M}}(\alpha)\) the cumulative distribution corresponding to the $\chi^2$ distribution of degree M. 
+If R is measured and Q chosen correctly and the assumption of gaussian measurement noise and process noise hold, the innovation should be gaussian distributed to. In that case the percentage of NIS or SNIS points between the confidence bounds should exactly match the value for which the bounds are calculated, here $95\%$. If the statistical model does not match with reality, less (S)NIS point will lie in the interval. A greater discrepancy in the percentage results in lower confidence in the statistical model and thus in a lower consistency between the model and the real world.
+    
 
 \newpar
 !!!!!!!!!!!!!!! UNITS R AND Q !!!!!!!!!!!!!!!
@@ -865,10 +961,89 @@ The resulting NIS and SNIS are plotted below in \autoref{fig:QcteR} and \autoref
 \end{figure}
 
 \newpar
-The expected probability density of the NIS is $\chi^2$. Looking at the numerator of equation \autoref{eq:nis}
+The resulting NIS and SNIS are plotted above in \autoref{fig:QcteR} and \autoref{fig:cteQR}. \autoref{fig:QcteR} shows the results for a constant R of $9.52e-7$ and different values of Q, going from a to large Q to a to small Q. The overall best result is there found for Q = 1e-8, but in none of the cases the Kalman filter is consistent. \autoref{fig:cteQR} shows the results for a constant Q of 1e-8 and different values of R. Here too the overall best result is found for $R = 1e-6 \approx 9.52e-7$. 
+
+\newpar
+\autoref{fig:zoomconsistent} shows an enlarged view of the NIS and SNIS for Q=1e-8 and R=1e-6, cutting away the transient and focusing in the steady state results. Of all the experiments, this one comes closest to consistency. Especially the NIS points are quite good located within the confidence bounds. Their distribution also starts to become random, as would be expected from a consistent filter.
+
+\newpar
+The inconsistency of the filter is generally due to deviations on the assumed statistical behaviour, like correlated noise sources or deterministic modeling errors. For example non linear system behaviour in the transient will cause a deterministic error between the model and the real world, causing the NIS and SNIS to be highly deterministic and also show a transient. This effect is visible in the plots made above. Related to this, it is virtually impossible to make a good estimate for Q, since it is an artificial quantity to fix random deviations of the system compared to the model. Q can be tuned to let the filter come close to consistency, but it will never be consistent if the modeled statistics do not correspond to the real world. 
+
 
 \subsubsection{Influence or Q/R ration on the position estimate}
+The results of the demanded experiments are visualised in \autoref{fig:QcteR_state_respons} and \autoref{fig:cteQR_state_respons}. The plots in the figures are arranged from large to small $\rho$ = Q/R ratio. It is clear that the estimator converges faster to the measurements for larger Q/R ratios. R is a measure for the uncertainty of the measured state. Thus if R is small, the measurements are trusted a lot. Q is a measure for the uncertainty of the calculated state based on the model. When this uncertainty is large, the correctness of the model is doubted. 
+
+\newpar
+Combining these interpretations explains the results. A large Q/R ratio means little trust is given to the model, and a lot of trust is given to the measurements, thus converging to the measurements faster. 
+
+\begin{figure}[H]
+\begin{adjustwidth}{-3cm}{-3cm}
+\centering
+\begin{tabular}{cc}
+  \includegraphics[width=80mm]{figs/assign3/Q3/33e/Qe_1.png} & \includegraphics[width=80mm]{figs/assign3/Q3/33e/Q95199e_11.png} \\
+  Q = 1e-1, R = 9.52e-7 $\implies \rho$ = 1.1e5 & Q = 1e-6, R = 9.52e-7 $\implies \rho$ = 1.1e-0\\[8pt]
+  \includegraphics[width=80mm]{figs/assign3/Q3/33e/Qe_7.png} & \includegraphics[width=80mm]{figs/assign3/Q3/33e/Qe_11.png} \\
+  Q = 1e-7, R = 9.52e-7 $\implies \rho$ = 1.1e-1 & Q = 1e-11, R = 9.52e-7 $\implies \rho$ = 1.1e-5
+\end{tabular}
+\end{adjustwidth}
+\captionof{figure}{Estimated state evolution and actual measurement for wrong initial position estimate. Effect of varying Q (with constant value of R = 9.52e-7).}
+\label{fig:QcteR_state_respons}
+\end{figure}
+
+
+\begin{figure}[H]
+\begin{adjustwidth}{-3cm}{-3cm}
+\centering
+\begin{tabular}{cc}
+  \includegraphics[width=80mm]{figs/assign3/Q3/33e/Re_6.png} & \includegraphics[width=80mm]{figs/assign3/Q3/33e/Re_4.png}\\
+  Q = 1e-8, R = 1e-6 $\implies \rho$ = 1e-2 & Q = 1e-8, R = 1e-4 $\implies \rho$ = 1e-4\\[8pt]
+  \includegraphics[width=80mm]{figs/assign3/Q3/33e/Re_2.png} & \includegraphics[width=80mm]{figs/assign3/Q3/33e/Re_0.png}\\
+  Q = 1e-8, R = 1e-2 $\implies \rho$ = 1e-6 & Q = 1e-8, R = 1e-0 $\implies \rho$ = 1e-8\\[8pt]
+\end{tabular}
+\end{adjustwidth}
+\captionof{figure}{Estimated state evolution and actual measurement for wrong initial position estimate. Effect of varying R (with constant value of Q=1e-8).}
+\label{fig:cteQR_state_respons}
+\end{figure}
 
 \subsubsection{System behaviour using slow pole placement estimator}
+
+The closed loop continuous time pole of the state feedback controller is $P_{c,c} = -(BK-A)$. The discrete pole of the estimator that is ten times slower then the controller is thus:
+
+\begin{equation}
+    P_{e,d} = e^{-T_{s}\frac{\left(BK-A\right)}{10}}
+\end{equation}
+
+\newpar
+Using the continuous time A = 0, B = 1 and the above used value for the feedback K = 55, $P_{e,d}$ calculated and L is calculated using acker in matlab:
+
+\begin{equation}
+    L = acker(A,AC,P_{e,d})
+\end{equation}
+
+\nawpar
+using the discrete time A = 1 and C = -1. The numerical results are:
+
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+        $P_{e,d}$ & 0.9982 \\
+        \hline
+        L & -0.0018 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\newpar
+Implementing this estimator and giving it a wrong initial estimate results in the following dynamic behaviour:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=120mm]{figs/assign3/Q3/vraag3f.png}
+    \captionof{figure}{\centering State evolution using pole placement estimator with L=-0.0018. The estimator is ten times slower than the feedback controller.}
+    \label{fig:poleplacementcontrollerstate}
+\end{figure}
+
+
+
 
 \end{document}

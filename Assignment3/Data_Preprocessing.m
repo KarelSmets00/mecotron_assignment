@@ -1,4 +1,4 @@
-function [data,files,t,Ts,len] = Data_Preprocessing(folder,len,vraagb)
+function [data,files,t,Ts,len] = Data_Preprocessing(folder,len,vraag)
 
     % -- Data pre-processing --
 
@@ -29,12 +29,16 @@ function [data,files,t,Ts,len] = Data_Preprocessing(folder,len,vraagb)
         labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
         data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
         
-        if vraagb
-            i_start = find(data_temp(:,11)==-0.2,1);
-            data(:,:,(i)) = data_temp((i_start-30:(i_start+len-1-30)),:);
-        else 
-            i_start = find(data_temp(:,10)==-0.15,1);
-            data(:,:,(i)) = data_temp((i_start:(i_start+len-1)),:);
+        switch vraag
+            case 'vraagb'
+                i_start = find(data_temp(:,11)==-0.2,1);
+                data(:,:,(i)) = data_temp((i_start-30:(i_start+len-1-30)),:);
+            case 'vraagf'
+                i_start = find(data_temp(:,10)==0.15,1);
+                data(:,:,(i)) = data_temp((i_start:(i_start+len-1)),:);
+            otherwise
+                i_start = find(data_temp(:,10)==-0.15,1);
+                data(:,:,(i)) = data_temp((i_start:(i_start+len-1)),:);
         end
         
 

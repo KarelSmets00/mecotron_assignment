@@ -3,7 +3,9 @@
 clear all; close all;
 
 
-Data_Preprocessing;
+% Data_Preprocessing;
+[data,t,u_mean_,th_mean_,v_mean_,Ts,len] = Data_Preprocessing('singleStep', 'A', 'RampUp')
+
 
 th_mean = [mean(data(:,2,(1:5)),3), mean(data(:,2,(6:10)),3), mean(data(:,2,(10:15)),3), mean(data(:,2,(16:20)),3) ];
 v_mean = [mean(data(:,3,(1:5)),3), mean(data(:,3,(6:10)),3), mean(data(:,3,(10:15)),3), mean(data(:,3,(16:20)),3)];
@@ -64,12 +66,16 @@ hold on
 plot(t,4*v_mean(:,1))
 plot(t, 2*v_mean(:,2))
 plot(t,v_mean(:,4))
+xlabel('time t [s]')
+ylabel('angular velocity [rad/s]')
 legend('4x meas 3v', '2x meas 6v', 'meas 12v','Location','southeast')
 
 subplot(2,1,2)
 hold on
 plot(t,(4*v_mean(:,1)-v_mean(:,4)))
 plot(t,(2*v_mean(:,2)-v_mean(:,4)))
+xlabel('time t [s]')
+ylabel('angular velocity [rad/s]')
 legend('error 4x 3V', 'error 2x 6V')
 
 %% linearity check calculating the gradients

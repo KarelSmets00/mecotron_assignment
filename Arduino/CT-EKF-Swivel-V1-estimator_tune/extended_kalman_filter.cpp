@@ -3,9 +3,9 @@
 void PredictionUpdate(const Matrix<2> &u, Matrix<3> &xhat, Matrix<3,3> &Phat) {
    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT PredictionUpdate OF THE EXTENDED KALMAN FILTER
    // Tuning parameter
-   float arrayQ[3][3]{ { 1e-5,  0, 0},    //Provide here the element values of weight Q
-                       { 0,  1e-5, 0},
-                       { 0,  0, 2e-3}};
+   float arrayQ[3][3]{ { 1e-7,  0, 0},    //Provide here the element values of weight Q
+                       { 0,  1e-7, 0},
+                       { 0,  0, 1e-4}};
   
    Matrix<3, 3> Q = arrayQ;
   
@@ -28,8 +28,8 @@ void PredictionUpdate(const Matrix<2> &u, Matrix<3> &xhat, Matrix<3,3> &Phat) {
 void CorrectionUpdate(const Matrix<2> &y, Matrix<3> &xhat, Matrix<3,3> &Phat, Matrix<2> &nu, Matrix<2,2> &S, Matrix<3,2> &L) {
    // UNCOMMENT AND COMPLETE LINES BELOW TO IMPLEMENT CorrectionUpdate OF THE EXTENDED KALMAN FILTER
    // Define useful constant
-   const float x_offset = 0.02;
-   const float y_offset = 0.04;
+   const float side_offset = 0.02;
+   const float front_offset = 0.04;
    
    const float alpha = 0.09 ;  // longitudinal distance from frontal IR sensor to front wheel wheel axle
    const float beta = 0.07 ;   // longitudinal distance from lateral IR sensor to front wheel axle
@@ -42,7 +42,8 @@ void CorrectionUpdate(const Matrix<2> &y, Matrix<3> &xhat, Matrix<3,3> &Phat, Ma
   
    // System C-matrix - Compute Jacobian of measurement equation
    float a = -1/cos(xhat(2,0));
-   float b = -sin(xhat(2,0))/(pow(cos(xhat(2,0)),2));
+   float b = -sin(xhat(2,0))/(pow(cos(xhat(2,0)),2.0));
+   // float b = -tan(xhat(2,0))/cos(xhat(2,0));
    
    float arrayJh[2][3]{{a, 0, b*xhat(0,0)}, //Provide here the element values of state-space matrix C
                        {0, a, b*xhat(1,0)}};
@@ -50,8 +51,8 @@ void CorrectionUpdate(const Matrix<2> &y, Matrix<3> &xhat, Matrix<3,3> &Phat, Ma
   
    // Evaluate measurement equation
 
-   float arrayh[2][1]{{ -(xhat(0,0)/cos(xhat(2,0))) - (alpha-y_offset) },
-                      { -(xhat(1,0)/cos(xhat(2,0))) - (gamma-x_offset) }};
+   float arrayh[2][1]{{ -(xhat(0,0)/cos(xhat(2,0))) - (alpha-front_offset) },
+                      { -(xhat(1,0)/cos(xhat(2,0))) - (gamma-side_offset) }};
    Matrix<2> h = arrayh;
   
    // Compute innovation

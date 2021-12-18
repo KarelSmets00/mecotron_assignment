@@ -28,7 +28,7 @@ void Robot::control() {
   Matrix<2> measurements;
 
   // Kalman filtering
-  if(controlEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
+  if(controlEnabled() || KalmanFilterEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
 
     // Correction step
     // perform the correction step if measurement from the sensor are meaningful

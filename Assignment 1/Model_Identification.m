@@ -210,6 +210,12 @@ plot(t, steprp_32z-steprp_31z)
 
 Model_Identification_filter
 
+figure 
+hold on
+pzmap(sys_31z)
+pzmap(sys_31z_f)
+legend("without filtering", "with filtering");
+
 %% store results
 
 fileName = "sys_31zf_motor";
@@ -233,3 +239,18 @@ switch motor
         model_B = sys_31z;
         save(fileName,'model_B','-append')
 end
+
+%% Comparing wd of the filtered and unfiltered model
+
+[wn, zeta]      = damp(sys_31z);
+[wn_f, zeta_f]  = damp(sys_31z_f);
+
+wd = cos(asin(zeta)) .* wn;
+wd_f = cos(asin(zeta_f)) .* wn_f;
+
+
+
+
+
+
+

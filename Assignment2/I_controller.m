@@ -30,9 +30,7 @@ w_index = find(phase<desired_phase,1);
 wc = w(w_index)
 mag_G = mag(w_index)
 
-Ti = tan((pi/2)-(SM*2*pi/360))/wc
-
-sys_I = (Ts/(2*Ti))*tf([1 1],[1 -1],Ts)
+sys_I = (Ts/2)*tf([1 1],[1 -1],Ts)
 
 % gain goed zetten
 [mag,phase,w] = bode(sys_I,w_as);
@@ -42,10 +40,9 @@ w = squeeze(w);
 
 mag_I = mag(w_index)
 
-K = 1/(mag_G*mag_I)
-Ki = K/Ti
+Ki = 1/(mag_G*mag_I)
 
-sys_I = sys_I*K;
+sys_I = sys_I*Ki;
 sys_D = sys_I;          % allows data_preprocessing to calculate control signals
 % loop gain (unity FB)
 sys_L = sys_G*sys_I

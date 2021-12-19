@@ -200,7 +200,8 @@ Another reason to filter the measured date, is due to the fact that the least-sq
 As mentioned before, we want to suppress the high pass character of the estimation method. This means that the filter should have at least the same order as the model being proposed during estimation. If it is desired to further suppress the high frequency measurement noise, the order of the filters should be higher than the order of the model. We chose to use a butterworth filter of order 4 and cutoff frequency of $70\pi rad/s$ as these gave the best results, minimizing the errors of the model compared to the measurements. 
 
 \newpar
-The result of the model estimation after filtering using the same amount of poles and zero's is displayed in \autoref{tab:location_Sys_31z_f}. It is clear that the location of the poles and zeros have shifted a bit. This is also visualised in the pole-zero maps of the identified model with and  without filter in \autoref{fig:pzmap}.
+The result of the model estimation after filtering using the same amount of poles and zero's is displayed in \autoref{tab:location_Sys_31z_f}. It is clear that the location of the poles and zeros have shifted a bit. This is also visualised in the pole-zero maps of the identified model with and  without filter in \autoref{fig:pzmap}. The poles and zeros have moved a bit towards the center of the circle. This would make the response of the filter a tiny bit faster. However, this small effect proves negligible when comparing the step responses of the two models. Later on when the extra inertia of the cart is added, the improvement brought by filtering is larger. Therefore, we continue using the filtered approach. 
+
 
 \begin{center}
     \begin{tabular}{ |c|c|c|c|c|}
@@ -221,9 +222,9 @@ The result of the model estimation after filtering using the same amount of pole
 \end{center}
 
 \begin{figure}[H]
-    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]
-    {figs/assign1/Q2/motor/pzmap}}
-    \caption{Pole-zero map of identified model with(right) and without(left) filtering}
+    \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]
+    {figs/assign1/Q2/motor/pzmapCombined.png}}
+    \caption{Pole-zero map of identified model with(blue) and without(red) filtering}
     \label{fig:pzmap}
 \end{figure}
 
@@ -415,13 +416,16 @@ For completeness, the simulated step response using the new models is compared t
 The initial requirements are:
 
 \begin{itemize}
-  \item Open loop system type 1 (at least) to get \(e_{ss} = 0\).
-  \item Phase margin of 50° or higher to reduce the overshoot sufficiently
-  \item Maximum bandwidth achievable given the above requirements to obtain fast responding system.
+  \item Open loop system type 1 (at least) to get \(e_{ss} = 0\),
+  \item Phase margin around 50° or higher to reduce the overshoot sufficiently/make the controller stable enough,
+  \item Fast response, but physically realisable, meaning that the cart may not slip while accelerating.
 \end{itemize}
 
 \newpar
-The controller will be at least a PI controller. The I part is needed to get an type 1 open loop system. The P part is needed to achieve a large bandwidth. This PI controller can be placed in series with a Lead compensator to achieve an ever higher bandwidth for the same phase margin.
+The controller will be at least an I controller. This is needed to get an type 1 open loop system. A P part can be added to achieve a large bandwidth. The resulting PI controller can be placed in series with a Lead compensator to achieve an ever higher bandwidth for the same phase margin if necessary. 
+
+\newpar
+While designing efforts were done to make the above described PILead controller. Though, for the system at hand, the high frequency amplification of the lead results in instability due to a negative gain margin. Therefor a PI controller was initially selected. The due slipping of the cart, it was found that just using an I controller resulted in a better controller. This is further clarified below.
 
 \subsubsection{Design process and parameters}
 
@@ -432,41 +436,66 @@ The PI controller (using Tustin discretization) is represented as:
 \end{equation}
 
 \newpar
-Using a phase margin of 80° and a safety margin of 15° (to anticipate the phase lag introduced by the PI controller), the frequency is sought at which the phase of the identified system becomes:
+Using a phase margin of 100° and a safety margin of 15° (to anticipate the phase lag introduced by the PI controller), a controller was designed to have maximum bandwidth. This resulted in following parameters:
+
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+         Ki & Kp \\
+        \hline
+         6.1432 & 0.6977 \\
+        \hline
+    \end{tabular}
+    \label{tab:KiKpPIPM100}
+\end{center}
+
+\newpar
+The corresponding step response is:
+
+\begin{figure}[H]
+    \makebox[\textwidth][c]{\includegraphics[width=120mm]
+    {figs/Q2_1/step_resp_PM100_PI.png}}
+    \caption{Too fast step response for cart. PI controller with PM = 100° @ $w_{c}$ = 32.9rad/s. The response betrays the presence of a real pole and a complex pole pair.}
+    \label{fig:topfastPI}
+\end{figure}
+
+\newpar
+This response turned out to start to abrupt, letting the cart slip. This caused intolerable overshoot in reality. The oscillation in the respons betrays the presence of a complex pole pair, while the gradual slope is due to a real pole. By trying different controller designs, it was found that reducing the bandwidth reduced the oscillations, but less the total response time. Similarly, increasing the phase margin lead to a significant increase of the response time, but only partially suppressed the oscillations. With this in mind, it was decided to reduce the bandwith, but gain response speed by lowering the phase margin. Based on these new requirements a I controller is selected for the system.
+
+\newpar
+The general formulation of the discrete time I controller (using Tustin discretisation) is:
 
 \begin{equation}
-    \phi = -180° + 80° + 15°
+    I(z) = Ki \frac{Ts}{2}\frac{z+1}{z-1}
+\end{equation}
+
+\newpar
+The I controller is designed to have a maximal bandwidth, for a specified phase margin of 75°. Taking into account the 90° phase lag of the integrator, the phase of the motor-wheel-cart system \(G(z)\) is calculated at he new cutoff frequency:
+
+\begin{equation}
+    \phi = -180° + 75° + 90°
 \end{equation}
 
 \newpar
 The corresponding frequency \(\omega_{c}\) is used to:
 
 \begin{itemize}
-    \item determine Ti as 
-        \begin{equation}
-            Ti = \frac{\tan \left( \frac{pi}{2} - \frac{15° pi}{180} \right)}{\omega_{c}}
-        \end{equation}
-    \item determine the physical system magnitude \( |G(\omega_{c})| \), with \(G(z)\) the discrete motor-wheel-cart system.
-    \item determine the magnitude of the PI controller \( |C(\omega_{c})| \), with \(Kp = 1\) and \(Ti\) as calculated above.
+    \item determine the physical system magnitude \( |G(\omega_{c})| \), 
+    \item determine the magnitude of the I controller \( |C(\omega_{c})| \), with \(Ki = 1\).
 \end{itemize}
 
 \newpar
-\(Kp\) is then calculated as \(Kp = \frac{1}{|G(\omega_{c})||C(\omega_{c})|} \), to get gain crossover at \(\omega_{c} \) in the loop gain. For completeness \(Ki\) is defined as \(Ki = \frac{Kp}{Ti} \).
+\(Ki\) is then calculated as \(Ki = \frac{1}{|G(\omega_{c})||C(\omega_{c})|} \), to get gain crossover at \(\omega_{c} \) in the loop gain.
 
 \newpar
-The trade-offs involving the design parametres are the following:
-
-\begin{itemize}
-    \item Kp: Enlarging the value of will shift the gain cross-over frequency wc of the open loop system to higher frequencies. This increases the bandwith of the system, making the system respond faster. At the same time the phase margin decreases because of the increasing phase lag of the open loop system at higher frequency, thus increasing the overshoot.
-    \item Ti: The integration time Ti determines the location of the break frequency of the PI controller and thus the location of the phase transition. To keep the phase margin at gain crossover as large as possible, Ti should be made large to shift the phase lag of the PI controller to lower frequencies. The downside of doing this, is that the low frequency gain gets reduced, reducing the integration action, making the closed loop system slower.
-\end{itemize}
+Ki is the only one parameter for which a trade off has to be made. It determines the location of the break frequency of the I controller. To keep the phase margin at gain crossover as large as possible, Ki should be made small to lower the crossover frequency of the closed loop system. This ensures a sufficiently large gain margin. The downside of doing this, is that the low frequency gain gets reduced, reducing the integration action, making the closed loop system slower.
 
 \newpar
 The open loop bode plot is displayed in \autoref{fig:2_openloopbode}.
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q2_1/openloopbode.png}}
+    {figs/Q2_1/I_openloopbodePM75.png}}
     \caption{Bode diagram of open loop system, designed phase margin and gain crossover indicated.}
     \label{fig:2_openloopbode}
 \end{figure}
@@ -476,10 +505,21 @@ The closed loop bode plot is displayed in \autoref{fig:2_closedloopbode}
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]
-    {figs/Q2_1/closedloopbode.png}}
+    {figs/Q2_1/I_closedloopbodePM75.png}}
     \caption{Bode diagram of closed loop system.}
     \label{fig:2_closedloopbode}
 \end{figure}
+
+\newpar
+Finally, comparing with \autoref{fig:topfastPI}, the closed loop step response does not have any oscillations anymore. The transient is also starting much more gradual, reducing the risk of slip. When comparing the response time, the I controller is just as fast as the PI.
+
+\begin{figure}[H]
+    \makebox[\textwidth][c]{\includegraphics[width=120mm]
+    {figs/Q2_1/I_steprespPM75.png}}
+    \caption{Closed loop step response using the I controller with PM = 75° @ $w_{c}$ = 5.69rad/s.}
+    \label{fig:2_closedloopbode}
+\end{figure}
+
 
 \subsubsection{Bandwidth limitations}
 Max theorethical bandwith is niquist freq = freq of fastest alternating digital !! output signal 
@@ -490,21 +530,21 @@ Max theorethical bandwith is niquist freq = freq of fastest alternating digital 
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]
-    {figs/Q2_1/closed_loop_response.png}}
+    {figs/Q2_1/I_closed_loop_response.png}}
     \caption{The measured and simulated response of the closed-loop system}.
     \label{fig:closed_loop_response}
 \end{figure}
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]
-    {figs/Q2_1/tracking_error.png}}
+    {figs/Q2_1/I_tracking_error.png}}
     \caption{The measured and simulated tracking error of the closed-loop system.}
     \label{fig:tracking_error}
 \end{figure}
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]
-    {figs/Q2_1/control_signal.png}}
+    {figs/Q2_1/I_control_signal.png}}
     \caption{The measured and simulated control signal of the closed-loop system.}
     \label{fig:control_signal}
 \end{figure}
@@ -524,6 +564,10 @@ We can a apply a constant force disturbance by letting the cart drive up or down
 \newpar
 As is made visible in the figs.... the implemented controller is still able to track the reference despite the disturbance. This essentially is the goal of a good controller. The steady state error $e_{ss}$ eventually becomes zero, as was one of the requirements of our controller.
 
+
+% ------------------------------------------------------------------
+% -- assignment 3 --
+% ------------------------------------------------------------------
 
 \section{Assignment 3: state feedback and state estimate}
 \subsection{State feedback controller design}
@@ -585,7 +629,7 @@ The pole of the discretized closed-loop system, shown in \autoref{} can be expre
 \end{figure}
 
 \newpar
-Applying the stability criterion to the located discrete pole, $|p_d| < 1$, and to the continuous pole, $Re(p_c) < 0$, gives us the boundaries of the stability region of the system. K should satisfy $0<K<\frac{1}{RT_s}$. How the pole moves on a pole-zero map in function of K is illustrated in \autoref{fig:vraag3.1.b_pz}. When increasing K between its allowed boundaries, it moves from the unit circle to the inside on the real axis. In the continuous Laplace-plane, this corresponds to the pole moving from the origin to the left on the negative Real axis. This will make the response of system faster, but also more nervous.  Choosing $K>\frac{1}{RT_s}$ will result in an unstable system. However, there is also a practical limit to K. Increasing K too much will result in saturation of the DC-motors, even before the K hits the stability limit.
+Applying the stability criterion to the located discrete pole, $|p_d| < 1$, and to the continuous pole, $Re(p_c) < 0$, gives us the same boundaries of the stability region of the system. K should satisfy $0<K<\frac{1}{RT_s}$. How the pole moves on a pole-zero map in function of K is illustrated in \autoref{fig:vraag3.1.b_pz}. When increasing K between its allowed boundaries, it moves from the unit circle to the inside on the real axis. In the continuous Laplace-plane, this corresponds to the pole moving from the origin to the left on the negative Real axis. This will make the response of system faster, but also more nervous.  Choosing $K>\frac{1}{RT_s}$ will result in an unstable system. However, there is also a practical limit to K. Increasing K too much will result in saturation of the DC-motors, even before the K hits the stability limit.
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]
@@ -739,7 +783,7 @@ For each proposed value of Q and R, the estimator gains indeed turn out the same
 
 \subsubsection{LQE closed loop pole and its behaviour}
 
-The characteristic equation of the LQE is given by:
+The characteristic equation of the LQE (in continuous time) is given by:
 
 \begin{equation}
     det\left(s\textbf{I}-\textbf{A}+\textbf{LC}\right) = 0
@@ -786,18 +830,18 @@ The location of the pole in terms of Q and R is:
 \end{center}
 
 \newpar
-For large values of Q/R the pole moves to \( s = -1\). For small values of Q/R the pole moves to \( s = 0\). The estimator thus becomes faster for larger Q/R ratios. This is to be expected since a large Q/R means that the measurement is being trusted more than the model. Therefore the estimated state will react faster on a changing physical state. This effect can clearly be seen in \autoref{fig:varRcteQ} in Section \ref{} 
+For large values of Q/R the pole moves to \( s = -1\). For small values of Q/R the pole moves to \( s = 0\). The estimator thus becomes faster for larger Q/R ratios. This is to be expected since a large Q/R means that the measurement is being trusted more than the model. Therefore the estimated state will react faster on a changing physical state. This effect can clearly be seen in \autoref{fig:cteQR_state_respons} in Section \ref{Q/R ratio position estimate} 
 
 \subsection{Implementation of state estimator and state feedback controller}
 \subsubsection{Choosing values for K and Q}
 
-In order to make a performant estimator and controller, it is important to choose appropriate values for the different design parameters. There are different sources of noise in the system which should be taken into account. $Q$ gives an indication of the process noise, which originates from our our identified model of the cart. This model is accurate (enough), but not perfect. Also the sensor to measure the front distance is not perfect. There will be an error in the measurement with respect to the real distance. The sensor is imperfect, it has a certain resolution and high frequency noise will always be present. This is taken into account by the value $R$. 
+In order to make a performant estimator and controller, it is important to choose appropriate values for the different design parameters. There are different sources of noise in the system which should be taken into account. $Q$ gives an indication of the process noise, which originates from our identified model of the cart. This model is accurate (enough), but not perfect. Varying resistances or inductances are for example not taken into account in the model. Also the sensor to measure the front distance is not perfect. There will be an error in the measurement with respect to the real distance. The sensor is imperfect, it has a certain resolution and high frequency noise will always be present. This is taken into account by the value $R$. 
 
 \newpar
-Choosing an appropriate value of R is relativity straight forward. The sensor is placed at a known distance from a wall, and the sensor output is recorded. Using this data, we can calculate the covariance of the measeruments.
+Choosing an appropriate value of R is relativity straight forward. The sensor is placed at a certain distance from a wall, and the sensor output is recorded. Using this data, we can calculate the covariance of the measeruments.
 
 \newpar
-To find a good estimation of Q, we have a look at the performance of the state estimator. Plotting the estimated state and the measured distance on the same figure gives us the chance to compare the two. $Q$ should be chosen such that the state is accurate to the measurement, because the sensor is quite trustworthy. However, high frequency noise should be avoided in the estimated state. By lowering $Q$, more trust is given to the model, lowering the influence of the measurements, thus removing noise. When $Q$ is too low, the estimator will lose track of reality, only taking the model into account. It is clear that a balance should be found between these two limit cases.
+To find a good estimation of Q, we have a look at the performance of the state estimator. Plotting the estimated state and the measured distance on the same figure gives us the chance to compare the two. $Q$ should be chosen such that the state is accurate to the measurement, because the sensor is quite trustworthy. However, high frequency noise should be avoided in the estimated state. By lowering $Q$ more trust is given to the model, lowering the influence of the measurements, thus removing noise. When $Q$ is too low, the estimator will lose track of reality, only taking the model into account. It is clear that a balance should be found between these two limit cases.
 
 \newpar
 Choosing a value for K again comes down to experimental tuning. When K is too high, overshoot will occur. the cart will pass the reference aimed for, and will have to reverse. Choosing K to low will result in a very slow controller, making the cart approach the reference needlessly slow. It comes down to the designer and the criteria that are subjected on the controller. How much overshoot is allowed? How long do we want the rise time or settling time to be? Again, a balance should be found. More on this in question 3.b. 
@@ -970,7 +1014,7 @@ The resulting NIS and SNIS are plotted above in \autoref{fig:QcteR} and \autoref
 The inconsistency of the filter is generally due to deviations on the assumed statistical behaviour, like correlated noise sources or deterministic modeling errors. For example non linear system behaviour in the transient will cause a deterministic error between the model and the real world, causing the NIS and SNIS to be highly deterministic and also show a transient. This effect is visible in the plots made above. Related to this, it is virtually impossible to make a good estimate for Q, since it is an artificial quantity to fix random deviations of the system compared to the model. Q can be tuned to let the filter come close to consistency, but it will never be consistent if the modeled statistics do not correspond to the real world. 
 
 
-\subsubsection{Influence or Q/R ration on the position estimate}
+\subsubsection{Influence of Q/R ratio on the position estimate} \label{Q/R ratio position estimate}
 The results of the demanded experiments are visualised in \autoref{fig:QcteR_state_respons} and \autoref{fig:cteQR_state_respons}. The plots in the figures are arranged from large to small $\rho$ = Q/R ratio. It is clear that the estimator converges faster to the measurements for larger Q/R ratios. R is a measure for the uncertainty of the measured state. Thus if R is small, the measurements are trusted a lot. Q is a measure for the uncertainty of the calculated state based on the model. When this uncertainty is large, the correctness of the model is doubted. 
 
 \newpar
@@ -1039,11 +1083,14 @@ Implementing this estimator and giving it a wrong initial estimate results in th
 \begin{figure}[H]
     \centering
     \includegraphics[width=120mm]{figs/assign3/Q3/vraag3f.png}
-    \captionof{figure}{\centering State evolution using pole placement estimator with L=-0.0018. The estimator is ten times slower than the feedback controller.}
+    \captionof{figure}{State evolution using pole placement estimator with L=-0.0018. The estimator is ten times slower than the feedback controller.}
     \label{fig:poleplacementcontrollerstate}
 \end{figure}
 
+\newpar
+This control performance is not satisfactory. The estimate updates much to slow. The slow state results in a small error and thus a slow response. Comparing the response in \autoref{fig:cteQR_state_respons} for R = 1e-6 and the one in \autoref{fig:poleplacementcontrollerstate}, it takes the cart about 18.5 seconds longer to get to the reference position. The system is dominated by the slow pole of the estimator.
 
+\newpar To overcome this problem when using pole placement estimators, the estimator pole has to be chosen about ten times faster than that of the feedback controller. This way, the feedback controller gain K is responsible for the response time (the feedback controller pole is the dominant one).
 
 
 \end{document}

@@ -60,11 +60,17 @@ figure()
 bode(sys_L)
 margin(sys_L)
 
+Autosave_figure('I_openloopbode'+"PM"+int2str(PM),9,5)
+
 figure()
 bode(sys_CL)
 
+Autosave_figure('I_closedloopbode'+"PM"+int2str(PM),9,5)
+
 figure()
 step(sys_CL)
+
+Autosave_figure("I_stepresp"+"PM"+int2str(PM),6,4)
 
 %% STORE CONTROLLER
 

@@ -522,7 +522,23 @@ Finally, comparing with \autoref{fig:topfastPI}, the closed loop step response d
 
 
 \subsubsection{Bandwidth limitations}
-Max theorethical bandwith is niquist freq = freq of fastest alternating digital !! output signal 
+It is possible to design a controller that yields a higher bandwidth. An example of this is the originally designed PI controller which resulted in the step response of \autoref{fig:topfastPI}. As mentioned in the caption of that figure the cutoff frequency is 33 rad/s compared to the 6 rad/s of the I controller. Theoretically for digital systems, the bandwidth limitation is the Nyquist frequency. This can be explained by considering a theoretical closed loop system that corresponds to a discrete delay $H(z) = 1/z$. The fastest frequency that can be followed in that case is one with a period of two sample times, meaning a discrete frequency of one half the sample frequency. This reasoning is graphically supported in \autoref{fig:maxBW}.
+
+\begin{figure}[H]
+    \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]
+    {figs/Q2_1/maxBW_theoretical.png}}
+    \caption{A theoretical closed loop system with maximum achievable bandwidth for a discrete system.}
+    \label{fig:maxBW}
+\end{figure}
+
+\newpar
+The controller to get this closed loop behaviour is theoretically always existing, but practically not realisable because it requires exact knowledge of the plant and due to possible causality violations. 
+
+\newpar
+The main practical problem caused by increasing the bandwidth is the lowering phase margin and consequently the increasing overshoot. The higher bandwidth makes the system faster and thus more aggressive. In the case of swivel this will cause unwanted tire slip. The higher bandwidth also causes more high frequency noise to be amplified, making the system more nervous.
+
+\newpar
+The software and microcontroller are in this case not limiting the bandwidth, because the bandwidth based on the physical requirements stays well below the digital limit of the Nyquist frequincy $f_{nyq} = 100\pi$. If the sample time of the controller would be larger, effectively causing the Nyquist frequency to drop considerably, it can become limiting.
 
 
 \subsection{Experimental validation of the controller}
@@ -550,7 +566,7 @@ Max theorethical bandwith is niquist freq = freq of fastest alternating digital 
 \end{figure}
 
 \subsubsection{Constant force disturbance}
-We can a apply a constant force disturbance by letting the cart drive up or downhill from a slope. This way, gravitational force will supply a constant force pulling the cart down. This disturbance $d(t)$ enters the system behind the plant, our cart as illustrated in \autoref{fig:disturbance_BlockDiagram}. $D(t)$ first passes throught the system $G_d(s)$ to convert this constant force into an influence on the velocitiy of the cart. 
+A constant force disturbance is applied by letting the cart drive straight up or down a slope. This way, gravitational force will supply a constant force pulling the cart down. This disturbance $d(t)$ enters the system behind the plant, our cart as illustrated in \autoref{fig:disturbance_BlockDiagram}. $D(t)$ first passes throught the system $G_d(s)$ to convert this constant force into an influence on the velocitiy of the cart. 
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]
@@ -563,6 +579,12 @@ We can a apply a constant force disturbance by letting the cart drive up or down
 
 \newpar
 As is made visible in the figs.... the implemented controller is still able to track the reference despite the disturbance. This essentially is the goal of a good controller. The steady state error $e_{ss}$ eventually becomes zero, as was one of the requirements of our controller.
+
+\newpar
+Another disturbance can be a lower supply voltage. Due to the way the the controller is implemented on the Arduino platform, this will result in lower control actions than expected. This disturbance will be compensated by feedback as long as the required motor voltages do not surpass the supply. More generally disturbances to the plant model will be compensated by the feedback to obtain a zero steady state error.
+
+\newpar
+Disturbances that can not be compensated for are those introduced in the feedback loop itself. A sensor offset will result in a non zero steady state error.
 
 
 % ------------------------------------------------------------------
@@ -841,20 +863,35 @@ In order to make a performant estimator and controller, it is important to choos
 Choosing an appropriate value of R is relativity straight forward. The sensor is placed at a certain distance from a wall, and the sensor output is recorded. Using this data, we can calculate the covariance of the measeruments.
 
 \newpar
-To find a good estimation of Q, we have a look at the performance of the state estimator. Plotting the estimated state and the measured distance on the same figure gives us the chance to compare the two. $Q$ should be chosen such that the state is accurate to the measurement, because the sensor is quite trustworthy. However, high frequency noise should be avoided in the estimated state. By lowering $Q$ more trust is given to the model, lowering the influence of the measurements, thus removing noise. When $Q$ is too low, the estimator will lose track of reality, only taking the model into account. It is clear that a balance should be found between these two limit cases.
+To find a good estimation of Q, we have a look at the performance of the state estimator. Plotting the estimated state and the measured distance on the same figure gives us the chance to compare the two. This is shown in \autoref{fig:QcteR_state_respons} further in the report. $Q$ should be chosen such that the state is accurate to the measurement, because the sensor is quite trustworthy. However, high frequency noise should be avoided in the estimated state. By lowering $Q$ more trust is given to the model, lowering the influence of the measurements, thus removing noise. When $Q$ is too low, the estimator will lose track of reality, only taking the model into account. It is clear that a balance should be found between these two limit cases.
 
 \newpar
-Choosing a value for K again comes down to experimental tuning. When K is too high, overshoot will occur. the cart will pass the reference aimed for, and will have to reverse. Choosing K to low will result in a very slow controller, making the cart approach the reference needlessly slow. It comes down to the designer and the criteria that are subjected on the controller. How much overshoot is allowed? How long do we want the rise time or settling time to be? Again, a balance should be found. More on this in question 3.b. 
+Choosing a value for K again comes down to experimental tuning. When K is too high, overshoot will occur. the cart will pass the reference aimed for, and will have to reverse. Choosing K too low will result in a very slow controller, making the cart approach the reference needlessly slow. It comes down to the designer and the criteria that are subjected on the controller. How much overshoot is allowed? How long do we want the rise time or settling time to be? Again, a balance should be found. More on this in question 3.b. 
 
 \newpar
-$P_{0|0}$ tells us the uncertainty of our initial placement of the cart, with respect to the initial estimate. E.g. if we estimate the initial state to be $0.15m$ and we place it down at $0.16m$, the deviation is $0.01m$, making the variance $0.0001m^2$. We estimated our initial placing would be around a cm, so we chose $0.0001m^2$ for $P_{0|0}$.
+$P_{0|0}$ tells us the uncertainty of our initial placement of the cart, with respect to the initial estimate. E.g. if the initial state is estimated to be $0.15m$ and it is placed down at $0.25m$, the deviation is $0.1m$, making the variance $0.01m^2$. The initial placing error would be around 10 cm, so we chose $0.01m^2$ for $P_{0|0}$.
 
 \newpar
-The values we chose for the discussed parameters are shown in \autoref{tab:}
+The values we chose for the discussed parameters are shown in \autoref{tab:NumVal3a}
 
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+         K & 55 \\
+        \hline
+         Q & 1e-8 $m^2$ \\
+        \hline
+         R & 9.5199e-7 $m^2$ \\
+        \hline
+         $P_{0|0}$ & 0.01 $m^2$ \\
+        \hline
+    \end{tabular}
+    \label{tab:NumVal3a}
+    \captionof{table}{Numeric values for design parameters of the Estimator and feedback controller}
+\end{center}
 
 \subsubsection{Influence of feedback constant K on the step response}
-In \autoref{fig:vraag3.3.b} the step response of the system is plotted for different values of K. The values of R, Q and $P_{k|k}$ are chosen as listed in \autoref{tab:}. The step input moves the cart from a distance of 15cm to 20 cm. As already mentioned in the previous question, the pole in the feedback system becomes faster when increasing K. This can be recognized in the rise time becoming faster. However, this comes with a pay-off, overshoot is also drastically increased, resulting in a higher settling time. A value of K=55 is chosen to optimize the controller. In our opinion, it provides the smoothest response, minimizing settling time and limiting overshoot.
+In \autoref{fig:vraag3.3.b} the step response of the system is plotted for different values of K. The values of R, Q and $P_{k|k}$ are chosen as listed in \autoref{tab:NumVal3a}. The step input moves the cart from a distance of 15cm to 20 cm. As already mentioned in the previous question, the pole in the feedback system becomes faster when increasing K. This can be recognized in the rise time becoming faster. However, this comes with a pay-off, overshoot is also drastically increased, resulting in a higher settling time. A value of K=55 is chosen to optimize the controller. In our opinion, it provides the smoothest response, minimizing settling time and limiting overshoot.
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.15\textwidth]
@@ -863,7 +900,7 @@ In \autoref{fig:vraag3.3.b} the step response of the system is plotted for diffe
     \label{fig:vraag3.3.b}
 \end{figure}
 
-The control signal of motor A during these experiments are shown in \autoref{fig:vraag3.3.b voltage}. The same remarks made above can be repeated here. Rise time becomes smaller, because the control signal is higher, thus allowing for a faster acceleration of the cart. But again, this comes with a price to pay, overshoot and settling time. It is also important to notice that if K is chosen too high, the motors will be saturated. The control signal will start to exceed the limit of 12 point for a certain K-value. Another limit for K is given by the stability criterion as mentioned in Section \ref{subsec:gain K}
+The control signal of motor A during these experiments are shown in \autoref{fig:vraag3.3.b voltage}. The same remarks made above can be repeated here. Rise time becomes smaller, because the control signal is higher, thus allowing for a faster acceleration of the cart. But again, this comes with a price to pay, overshoot and settling time. It is also important to notice that if K is chosen too high, the motors will be saturated. The control signal will start to exceed the limit of 12 volts for a certain K-value. Another limit for K is given by the stability criterion as mentioned in Section \ref{subsec:gain K}
 
 \begin{figure}[H]
     \makebox[\textwidth][c]{\includegraphics[width=1.15\textwidth]
@@ -874,7 +911,7 @@ The control signal of motor A during these experiments are shown in \autoref{fig
 
 
 \subsubsection{Influence of Q and R on the evolution of \(\hat{P}_{k|k}\) and \(L_{k}\)}
-To analyse the influence of Q and R on \(\hat{P}_{k|k}\) and \(L_{k}\), the cart is positioned at a distance of 30cm. When the controller and estimator are enabled, the reference distance is set to 15 cm. Two sets of measurements were made. The first one keeps R at a constant value of \(R=9.5199m^2\), varying Q between 1e-1 and 1e-11\(m^2\). The results are visualised in the upper half of \autoref{fig:vraag3.3.c_PL}. The second set shows data for Q constant and equal to 1e-8\(m^2\), with R varying from 1 to 1e-6\(m^2\) . Results are plotted in the lower half of \autoref{fig:vraag3.3.c_PL}.
+To analyse the influence of Q and R on \(\hat{P}_{k|k}\) and \(L_{k}\), the cart is positioned at a distance of 30cm. When the controller and estimator are enabled, the reference distance is set to 15 cm. Two sets of measurements were made. The first one keeps R at a constant value of \(R=9.5199e-7m^2\), varying Q between 1e-1 and 1e-11\(m^2\). The results are visualised in the upper half of \autoref{fig:vraag3.3.c_PL}. The second set shows data for Q constant and equal to 1e-8\(m^2\), with R varying from 1 to 1e-6\(m^2\) . Results are plotted in the lower half of \autoref{fig:vraag3.3.c_PL}.
 
 \begin{figure}[H]
 \begin{adjustwidth}{-3cm}{-3cm}
@@ -894,30 +931,30 @@ These results are in line with the answers given in question 2(e) and 2(d). In 2
 
 \newpar
 The results are also consistent with the answers given in 2(d).
-In \autoref{} a few values of \(L_\infty\) are listed for some of the Q and R values used in the experiments. The third column shows the value when calculated with the expression obtained in 2(d). The fourth column lists the values of L after it has stabilised in the experiments. It is clear these correspond to each other as they are almost always exactly the same.
+In \autoref{tab:LinfinityComparison} a few values of \(L_\infty\) are listed for some of the Q and R values used in the experiments. The third column shows the value when calculated with the expression obtained in 2(d). The fourth column lists the values of L after it has stabilised in the experiments. The same pattern is followed in column 5 and 6, but with values for \(P_\infIt\). It is clear these correspond to each other as they are almost always exactly the same.
 
 \begin{center}
-    \begin{tabular}{ |c|c|c|c|}
+    \begin{tabular}{ |c|c|c|c|c|c|}
     \hline
-    R [\(m^2\)] & Q [\(m^2\)] & \(L_\infty\) calculated [-] & \(L_\infty\) measured [-]  \\
+    R [\(m^2\)] & Q [\(m^2\)] & \(L_\infty\) calculated [-] & \(L_\infty\) measured [-] & \(P_\infty\) calculated [\(m^2\)] & \(P_\infty\) measured [\(m^2\)] \\
     \hline
-    9.5199e-7        & 1e-1     & -0.99999      &   -0.99999           \\
+    9.5199e-7        & 1e-1     & -0.99999      &   -0.99999 & 0.95367 & 0.95198          \\
     \hline
-    9.5199e-7        & 1e-3     & -0.99904      &  -0.99905                 \\
+    9.5199e-7        & 1e-3     & -0.99904      &  -0.99905 & 0.95111 & 0.95108               \\
     \hline
-    9.5199e-7        & 1e-5     & -0.91950      &  -0.91950            \\
+    9.5199e-7        & 1e-5     & -0.91950      &  -0.91950 & 0.87536 & 0.87536          \\
     \hline
-    9.5199e-7        & 1e-7     & -0.27581      & -0.27581           \\ 
+    9.5199e-7        & 1e-7     & -0.27581      & -0.27581 & 0.26257 & 0.26256          \\ 
     \hline
-    9.5199e-7        & 1e-8     & -0.09737      & -0.09737           \\ 
+    9.5199e-7        & 1e-8     & -0.09737      & -0.09737 & 0.092698 & 0.092698         \\ 
     \hline
-    9.5199e-7        & 1e-9     & -0.03188      & -0.03188           \\ 
+    9.5199e-7        & 1e-9     & -0.03188      & -0.03188 & 0.03036 & 0.03035         \\ 
     \hline
-    9.5199e-7        & 1e-11    & -0.00323      & -0.00376           \\ 
+    9.5199e-7        & 1e-11    & -0.00323      & -0.00376 & 0.00358644 & 0.00308          \\ 
     \hline
     \end{tabular}  
-    \captionof{table}{location and frequency of poles and zeros in the fitted system}
-    \label{tab:location_Sys_31z_f}
+    \captionof{table}{Comparing calculated and measured values of $L_\infty$}
+    \label{tab:LinfinityComparison}
 \end{center}
 
 
@@ -957,7 +994,7 @@ The consistency is checked using confidence intervals. The confidence bounds $\a
 \end{center}
 
 \newpar
-With \(F_{\chi^2_{M}}(\alpha)\) the cumulative distribution corresponding to the $\chi^2$ distribution of degree M. 
+with \(F_{\chi^2_{M}}(\alpha)\) the cumulative distribution corresponding to the $\chi^2$ distribution of degree M. 
 If R is measured and Q chosen correctly and the assumption of gaussian measurement noise and process noise hold, the innovation should be gaussian distributed to. In that case the percentage of NIS or SNIS points between the confidence bounds should exactly match the value for which the bounds are calculated, here $95\%$. If the statistical model does not match with reality, less (S)NIS point will lie in the interval. A greater discrepancy in the percentage results in lower confidence in the statistical model and thus in a lower consistency between the model and the real world.
     
 
@@ -969,16 +1006,16 @@ If R is measured and Q chosen correctly and the assumption of gaussian measureme
 \centering
 \begin{tabular}{cc}
   \includegraphics[width=80mm]{figs/assign3/Q3/Qe_1.png} &   \includegraphics[width=80mm]{figs/assign3/Q3/Qe_3.png} \\
-  Q = 1e-1, R = 9.52e-7 & Q = 1e-3, R = 9.52e-7 \\[8pt]
+  Q = 1e-1\(m^2\), R = 9.52e-7\(m^2\) & Q = 1e-3\(m^2\), R = 9.52e-7\(m^2\) \\[8pt]
   \includegraphics[width=80mm]{figs/assign3/Q3/Qe_5.png} & \includegraphics[width=80mm]{figs/assign3/Q3/Q95199e_11.png} \\
-  Q = 1e-5, R = 9.52e-7 & Q = 1e-6, R = 9.52e-7 \\[8pt]
+  Q = 1e-5\(m^2\), R = 9.52e-7\(m^2\) & Q = 1e-6\(m^2\), R = 9.52e-7\(m^2\) \\[8pt]
   \includegraphics[width=80mm]{figs/assign3/Q3/Qe_7.png} & \includegraphics[width=80mm]{figs/assign3/Q3/Qe_8.png} \\
-  Q = 1e-7, R = 9.52e-7 & Q = 1e-8, R = 9.52e-7 \\[8pt]
+  Q = 1e-7\(m^2\), R = 9.52e-7\(m^2\) & Q = 1e-8\(m^2\), R = 9.52e-7\(m^2\) \\[8pt]
   \includegraphics[width=80mm]{figs/assign3/Q3/Qe_9.png} & \includegraphics[width=80mm]{figs/assign3/Q3/Qe_11.png}\\
-  Q = 1e-9, R = 9.52e-7 & Q = 1e-11, R = 9.52e-7
+  Q = 1e-9\(m^2\), R = 9.52e-7\(m^2\) & Q = 1e-11\(m^2\), R = 9.52e-7\(m^2\)
 \end{tabular}
 \end{adjustwidth}
-\captionof{figure}{NIS and SNIS for varying values of Q and constant value of R = 9.52e-7.}
+\captionof{figure}{NIS and SNIS for varying values of Q and constant value of R = 9.52e-7\(m^2\).}
 \label{fig:QcteR}
 \end{figure}
 
@@ -988,19 +1025,19 @@ If R is measured and Q chosen correctly and the assumption of gaussian measureme
 \centering
 \begin{tabular}{cc}
   \includegraphics[width=80mm]{figs/assign3/Q3/Re_0.png} &   \includegraphics[width=80mm]{figs/assign3/Q3/Re_2.png} \\
-  Q = 1e-8, R = 1e-0 & Q = 1e-8, R = 1e-2 \\[8pt]
+  Q = 1e-8\(m^2\), R = 1e-0\(m^2\) & Q = 1e-8\(m^2\), R = 1e-2\(m^2\) \\[8pt]
  \includegraphics[width=80mm]{figs/assign3/Q3/Re_4.png} &   \includegraphics[width=80mm]{figs/assign3/Q3/Re_6.png} \\
- Q = 1e-8, R = 1e-4 & Q = 1e-8, R = 1e-6 \\[8pt]
+ Q = 1e-8\(m^2\), R = 1e-4\(m^2\) & Q = 1e-8\(m^2\), R = 1e-6\(m^2\) \\[8pt]
 \end{tabular}
 \end{adjustwidth}
-\captionof{figure}{NIS and SNIS for varying values of R and constant value of Q = 1e-8.}
+\captionof{figure}{NIS and SNIS for varying values of R and constant value of Q = 1e-8\(m^2\).}
 \label{fig:cteQR}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=100mm]{figs/assign3/Q3/Re_6_zoom.png}
-    \captionof{figure}{\centering Enlarged view of the Q and R setting which comes closest to consistency: Q=1e-8, R=1e-6}
+    \captionof{figure}{\centering Enlarged view of the Q and R setting which comes closest to consistency: Q=1e-8\(m^2\), R=1e-6\(m^2\)}
     \label{fig:zoomconsistent}
 \end{figure}
 

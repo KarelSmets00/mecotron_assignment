@@ -36,7 +36,7 @@ for i=1:c
 end
 xlabel("time [s]")
 ylabel("measured distance [m]")
-legend("step input","K = 50","K = 55","K = 60","K = 80","K = 100","K = 150","K = 200","K = 300")
+legend("step input","K = 50s^{-1}","K = 55s^{-1}","K = 60s^{-1}","K = 80s^{-1}","K = 100s^{-1}","K = 150s^{-1}","K = 200s^{-1}","K = 300s^{-1}")
 
 figure
 hold on
@@ -46,4 +46,4 @@ for i=1:c
 end
 xlabel("time [s]")
 ylabel("Controle signal motor A [V]")
-legend("K = 50","K = 55","K = 60","K = 80","K = 100","K = 150","K = 200","K = 300", "Location","best")
+legend("K = 50s^{-1}","K = 55s^{-1}","K = 60s^{-1}","K = 80s^{-1}","K = 100s^{-1}","K = 150s^{-1}","K = 200s^{-1}","K = 300s^{-1}", "Location","best")

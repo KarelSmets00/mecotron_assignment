@@ -13,7 +13,7 @@ confidence = 0.95;
 % files = [".\measured data\QR_optimisation\Q1e-6.csv"
 %         ".\measured data\QR_optimisation\Q5e-7.csv"
 %         ".\measured data\QR_optimisation\Q5e-9.csv"];
-files =".\measured data\Confidence intervals\P0.01_0.01_0.12_Q2.csv"
+files =".\measured data\Confidence intervals\P0001_P0001_P003.csv"
 
 R = [1e-6 0
      0    1e-6];

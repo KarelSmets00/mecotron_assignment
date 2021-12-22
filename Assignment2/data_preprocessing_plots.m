@@ -9,7 +9,7 @@ if PI
     slope = 'f10'                 % "s7"=slope or ... 
     PI_controller;
 elseif I 
-    folder = "I_controller"
+    folder = "I_controller_6"
     I_controller;
 end
 

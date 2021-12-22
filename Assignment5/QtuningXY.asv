@@ -20,6 +20,36 @@ title("y")
 
 figure
 hold on
-plot(t, data(:,2,3))
-plot(t, data(:,10,3))
+plot(t, data(:,4,1))
+plot(t, data(:,4,2))
+plot(t,data(:,4,3))
+legend("Q-7", "Q-8", "Q-9")
+title("\theta")
 
+
+figure
+hold on
+plot(t, data(:,2,3))
+plot(t, -data(:,11,3)-0.04)
+
+figure
+hold on 
+plot(t, data(:,3,3))
+plot(t, -data(:,12,3)-0.02)
+
+
+%% evaluating measurement equation
+alpha = 0.09;
+beta = 0.07;
+gamma = 0.075;
+
+
+
+for i=1:length(files)
+    z1 = -data(:,2,i)./cos(data(:,4,i)) - alpha;
+    z2 = (beta*sin(data(:,4,i))-data(:,3,i))./cos(data(:,4,i)) - gamma;
+end
+
+figure
+hold on 
+title("vergelijken meting + ")

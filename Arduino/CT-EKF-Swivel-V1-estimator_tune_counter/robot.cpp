@@ -40,6 +40,10 @@ void Robot::control() {
        writeValue(10, measurements(1));
     }
 
+    if (count < upper_count){
+      _xhat(2) = 0.0;
+    }
+
     // // Useful outputs to QRC for assignment questions
      writeValue(0, _xhat(0));
      writeValue(1, _xhat(1));
@@ -188,6 +192,9 @@ void Robot::control() {
 
   //triggers the trajectory to return the next values during the next cycle
   trajectory.update();
+
+  //
+  count += 1;
 }
 
 void Robot::resetController(){
@@ -216,6 +223,10 @@ void Robot::resetKalmanFilter() {
    _nu.Fill(0);
 }
 
+void Robot::resetCounter(){
+  count = 0;
+}
+
 bool Robot::controlEnabled() {
   return _button_states[0];       // The control is enabled if the state of button 0 is true
 }
@@ -226,6 +237,7 @@ bool Robot::KalmanFilterEnabled() {
 
 void Robot::button0callback() {
   if(toggleButton(0)) {           // Switches the state of button 0 and checks if the new state is true
+    resetCounter();
     resetController();
     resetKalmanFilter();            // Reset the Kalman filter
     trajectory.start();

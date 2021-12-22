@@ -62,7 +62,7 @@ void CorrectionUpdate(const Matrix<2> &y, Matrix<3> &xhat, Matrix<3,3> &Phat, Ma
   
    // Compute corrected system state estimate
    xhat += L * nu;
-  
+    
    // Compute corrected state estimate covariance
    Phat -= L * C * Phat;
 }

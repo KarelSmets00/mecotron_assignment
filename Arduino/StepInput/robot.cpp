@@ -40,7 +40,7 @@ void Robot::control() {
     if (k==0){
       if (state){
         setVoltageMotorA(voltageA);
-        setVoltageMotorB(0.0);
+        setVoltageMotorB(voltageA);
       }
       else{
         setVoltageMotorA(0.0);

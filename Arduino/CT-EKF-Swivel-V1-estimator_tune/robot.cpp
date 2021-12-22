@@ -165,7 +165,7 @@ void Robot::control() {
   }
 
   // Kalman filtering
-  if(controlEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
+  if(controlEnabled() || KalmanFilterEnabled()) {   // only do this if Kalman filter is enabled (triggered by pushing 'Button 1' in QRoboticsCenter)
     // Prediction step
     PredictionUpdate(desiredVelocityCart, _xhat, _Phat);                        // do the prediction step -> update _xhat and _Phat
   }
@@ -192,8 +192,10 @@ void Robot::control() {
 
 void Robot::resetController(){
   // Set all errors and control signals in the memory back to 0
-  // ...
-  // ...
+  errorA = 0.0;
+  errorB = 0.0;
+  controlA = 0.0;
+  controlB = 0.0;
 }
 
 void Robot::resetKalmanFilter() {
@@ -202,7 +204,7 @@ void Robot::resetKalmanFilter() {
     _Phat.Fill(0);      // Initialize the covariance matrix
     _Phat(0,0) = 0.0001;     // Fill the initial covariance matrix, you can change this according to your experiments
     _Phat(1,1) = 0.0001;
-    _Phat(2,2) = 0.03;    // 10 graden fout
+    _Phat(2,2) = 0.02;    // 10 graden fout
   
    // Initialize state estimate
    _xhat(0) = -0.3;    // Change this according to your experiments
@@ -227,7 +229,7 @@ void Robot::button0callback() {
     resetController();
     resetKalmanFilter();            // Reset the Kalman filter
     trajectory.start();
-    writeValue(0, _xhat(0,0));
+    writeValue(0, _xhat(0));
     message("Controller reset and enabled.");    // Display a message in the status bar of QRoboticsCenter
   }
   else {

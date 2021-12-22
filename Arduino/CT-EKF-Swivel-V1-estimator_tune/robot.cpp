@@ -204,7 +204,7 @@ void Robot::resetKalmanFilter() {
     _Phat.Fill(0);      // Initialize the covariance matrix
     _Phat(0,0) = 0.001;     // Fill the initial covariance matrix, you can change this according to your experiments
     _Phat(1,1) = 0.001;
-    _Phat(2,2) = 0.00001;    // 10 graden fout
+    _Phat(2,2) = 0.3;    // 10 graden fout
   
    // Initialize state estimate
    _xhat(0) = -0.3;    // Change this according to your experiments

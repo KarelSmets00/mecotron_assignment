@@ -111,8 +111,8 @@ classdef KalmanExperiment
                 hold on;
                 f = fill(bound(1,:),bound(j+1,:),p.Color,'FaceAlpha',0.15,'LineStyle','none');
                 f.Annotation.LegendInformation.IconDisplayStyle = 'off';
-                legend(); 
-                xlabel('time'); 
+                legend('location', 'best'); 
+                xlabel('time');
                 if ~h; hold off; end
                 if i<length(states)
                     figure(); 

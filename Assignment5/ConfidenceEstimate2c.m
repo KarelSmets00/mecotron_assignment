@@ -10,15 +10,12 @@ states = [1 2 3];
 confidence = 0.95;
 
 % -- FILES --
-% files = [".\measured data\QR_optimisation\Q1e-6.csv"
-%         ".\measured data\QR_optimisation\Q5e-7.csv"
-%         ".\measured data\QR_optimisation\Q5e-9.csv"];
-files =[".\measured data\Qxy_22_12\Q1e-7.csv"
-        ".\measured data\Qxy_22_12\Q1e-8.csv"
-        ".\measured data\Qxy_22_12\Q1e-9.csv"]
+files = [".\measured data\22_12\ff_00.csv"
+         ".\measured data\22_12\ff_22.csv"
+         ".\measured data\22_12\ff_hoekfout.csv"]
 
-R = [7e-7 0
-     0    7e-7];
+R = [1e-6 0
+     0    1e-6];
 
 % -- processing --
 
@@ -55,17 +52,30 @@ for i = 1:length(files(:,1))
     obj = KalmanExperiment(readdata(:,1)/1000, readdata(:,8:10)', P, readdata(:,11:12)', r, u);      
     plotstates(obj, states, confidence);
     
-%     filename = strsplit(filename,'\');
-%     measurementName = erase(filename(end),'.csv');
-%     
-%     if export_fig
-%         fig = gcf;
-%         fig.PaperUnits = 'inches';
-%         fig.PaperPosition = [0 0 6 3];
-%         print(measurementName,'-dpng','-r0')
-%         movefile(".\"+measurementName+".png", ".\StatePlots")
-%     end 
-    
 end
 
+if export_fig
 
+    figs = findobj('Type','figure')
+    fignames = ["ff_hoekfout_th"
+                "ff_hoekfout_y"
+                "ff_hoekfout_x"
+                "ff_22_th"
+                "ff_22_y"
+                "ff_22_x"
+                "ff_00_th"
+                "ff_00_y"
+                "ff_00_x"];
+
+    for i = 1:length(figs)
+        
+        measurementName = fignames(i)
+
+        fig = figs(i);
+        fig.PaperUnits = 'inches';
+        fig.PaperPosition = [0 0 6 3];
+        print(fig,measurementName,'-dpng','-r0')
+        movefile(".\"+measurementName+".png", ".\StatePlots")
+        
+    end
+end

@@ -20,6 +20,15 @@ title("y")
 
 figure
 hold on
+plot(t, data(:,4,1))
+plot(t, data(:,4,2))
+plot(t,data(:,4,3))
+legend("Q-7", "Q-8", "Q-9")
+title("\theta")
+
+
+figure
+hold on
 plot(t, data(:,2,3))
 plot(t, -data(:,11,3)-0.04)
 

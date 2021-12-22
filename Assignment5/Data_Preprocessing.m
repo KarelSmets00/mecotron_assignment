@@ -21,7 +21,7 @@ function [data,files,t,Ts,len] = Data_Preprocessing_b(folder,len)
     Ts = 0.01;
 
     for i = 1:length(files)
-
+    
         filename = convertCharsToStrings(files(i));
         csvfile = convertStringsToChars(folder + filename);
 

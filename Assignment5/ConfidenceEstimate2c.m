@@ -13,10 +13,12 @@ confidence = 0.95;
 % files = [".\measured data\QR_optimisation\Q1e-6.csv"
 %         ".\measured data\QR_optimisation\Q5e-7.csv"
 %         ".\measured data\QR_optimisation\Q5e-9.csv"];
-files =".\measured data\Confidence intervals\P0001_P0001_P003.csv"
+files =[".\measured data\Qxy_22_12\Q1e-7.csv"
+        ".\measured data\Qxy_22_12\Q1e-8.csv"
+        ".\measured data\Qxy_22_12\Q1e-9.csv"]
 
-R = [1e-6 0
-     0    1e-6];
+R = [7e-7 0
+     0    7e-7];
 
 % -- processing --
 
@@ -38,8 +40,8 @@ for i = 1:length(files(:,1))
     readlabels = strsplit(readlabels{:,datastartline-1},[delimiter ' ']);
     readdata = dlmread(csvfile, delimiter, datastartline-1, 0);  % data
 
-%     i_start = find(readdata(:,10)==-0.15,1)+1;
-%     readdata = readdata((i_start:end),:);
+    i_start = find(readdata(:,2)==-0.3,1)+1;
+    readdata = readdata((i_start:end),:);
     
     [lia,locb] = ismember(labels,readlabels);
     readdata = readdata(:,[1 locb]);
@@ -47,6 +49,8 @@ for i = 1:length(files(:,1))
     r = repmat(R,[1 1 size(readdata,1)]);
     u = zeros(0,size(readdata,1));
     P = reshape([readdata(:,2:4) readdata(:,3) readdata(:,5:6) readdata(:,4) readdata(:,6) readdata(:,7)]', [3,3,size(readdata,1)]);
+    
+    figure()
     
     obj = KalmanExperiment(readdata(:,1)/1000, readdata(:,8:10)', P, readdata(:,11:12)', r, u);      
     plotstates(obj, states, confidence);

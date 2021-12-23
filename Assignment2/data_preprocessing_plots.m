@@ -9,7 +9,7 @@ if PI
     slope = 'f10'                 % "s7"=slope or ... 
     PI_controller;
 elseif I 
-    folder = "I_controller_6"
+    folder = "I_controller_6_disturbance"
     I_controller;
 end
 
@@ -23,7 +23,7 @@ len = 250;
 %voltageInterval = 3;
 
 
-for i = 1:3
+for i = 1:2
     if PI
         file = slope + "_PM80_" + int2str(i) +".csv";
     elseif I
@@ -35,7 +35,7 @@ for i = 1:3
     labels = strsplit(labels{:, 2}, ', '); % Split and fetch the labels (they are in line 2 of every record)
     data_temp = dlmread(csvfile, ',', 2, 0); % Data follows the labels
     
-    i_start = find(data_temp(:,4)>9);
+    i_start = find(data_temp(:,4)>5);
     data(:,:,i) = data_temp(((i_start-shift):(i_start+len-1-shift)),:);
    
 end
@@ -68,7 +68,7 @@ if verbose
     plot(t,y);
     xlabel('t [s]')
     ylabel("angular velocity [rad/s]")
-    legend("reference", "measured closed-loop response", "simulated closed-loop response", 'Location','best')
+    legend("reference", "measured closed-loop response", "simulated closed-loop response", 'Location','southeast')
     end
 
     for i=1:1  
@@ -78,7 +78,7 @@ if verbose
     plot(t, (data(:,4,1)-y))
     xlabel('t [s]')
     ylabel("tracking error [rad/s]")
-    legend("measured tracking error", "simulated tracking error", 'Location','best')
+    legend("measured tracking error", "simulated tracking error", 'Location','northeast')
     end
 
     error_sim = data(:,4,1)-y;
@@ -91,6 +91,6 @@ if verbose
     plot(t,u_sim)
     xlabel('t [s]')
     ylabel('Control signel [V]')
-    legend('measured control signal', 'simulated control signal', 'Location','best')
+    legend('measured control signal', 'simulated control signal', 'Location','southeast')
     end
 end
